@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <meta title="assetloader" package="org.assetloader" version="1.0.0" company="Wolfie" />
+    <app main="Main" file="assetloader" path="webRoot" />
+
+    <source path="src" />
+
+    <haxelib name="openfl" />
+    <haxelib name="hx3compat" />
+</project>
