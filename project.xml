@@ -7,4 +7,7 @@
 
     <haxelib name="openfl" />
     <haxelib name="hx3compat" />
+    <haxelib name="osflash-signals" />
+    <haxelib name="as3hx" />
+
 </project>
