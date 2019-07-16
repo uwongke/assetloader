@@ -110,7 +110,6 @@ class URLParser {
         complext regex.  The _parts are provided to map regex(s) in order of appearance of the combined
         expression so I've simply used empty string literals in place of unused fields.  Haxe reflection
         is employed to populate the exiting fields as appropriate.  Wolfie. */
-
     static private var _parts : Array<String> = [
         "",
         "protocol",
@@ -121,7 +120,7 @@ class URLParser {
         "host",
         "port",
         "",
-        "",
+        "path",
         "",
         "fileName",
         "urlVariables",
@@ -150,10 +149,19 @@ class URLParser {
             for (i in 0..._parts.length) {
                 if(_parts[i] != ""){
                     if(urlExp.matched(i) !=null){
-                        Reflect.setField(this, _parts[i],  urlExp.matched(i));
+                        Reflect.setField(this, "_"+_parts[i],  urlExp.matched(i));
                     }
                 }
             }
+            /** Handle fileExtension */
+            if(_fileName != null){
+                if(_fileName.indexOf(".") != -1){
+                    _fileExtension = _fileName.substr(_fileName.lastIndexOf(".") + 1);
+                }
+            }
+
+            /** Handle urlVariables */
+            _urlVariables = new URLVariables(_urlVariables);
         }
     }
 }
