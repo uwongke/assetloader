@@ -1,5 +1,7 @@
 package org.assetloader.parsers;
 
+import com.poptropica.interfaces.IPlatform;
+import org.assetloader.base.LoaderFactory;
 import org.assetloader.core.ILoader;
 import org.assetloader.base.AssetType;
 import openfl.net.URLRequest;

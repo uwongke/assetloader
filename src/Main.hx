@@ -1,8 +1,11 @@
-
+import test.TestRunner;
 import js.Browser;
 
 class Main {
     public function new(valueClasses: Array<Dynamic> = null) {
+        new TestRunner();
+
+
         valueClasses = switch(valueClasses) {
             case null: new Array<Dynamic>();
             default: valueClasses;

@@ -112,8 +112,8 @@ class AbstractLoader implements ILoader {
         _onProgress = new ProgressSignal();
         _onComplete = new LoaderSignal();
 
-        _onAddedToParent = new LoaderSignal(IAssetLoader);
-        _onRemovedFromParent = new LoaderSignal(IAssetLoader);
+        _onAddedToParent = new LoaderSignal([IAssetLoader]);
+        _onRemovedFromParent = new LoaderSignal([IAssetLoader]);
 
         _onAddedToParent.add(addedToParent_handler);
         _onRemovedFromParent.add(removedFromParent_handler);

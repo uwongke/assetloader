@@ -31,7 +31,8 @@ class ProgressSignal extends LoaderSignal {
 
         args.splice(1, 6);
 
-        super.dispatch.apply(null, args);
+        //super.dispatch.apply(null, args);
+        super.dispatch([null, args]);
     }
 
     /** Gets the latency in milliseconds. */

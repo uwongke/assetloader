@@ -25,7 +25,8 @@ class HttpStatusSignal extends LoaderSignal {
 
         _status = args.splice(1, 1)[0];
         //Reflect.setField(super.dispatch, args);
-        super.dispatch.apply(null, args);
+        //super.dispatch.apply(null, args);
+        super.dispatch([null, args]);
     }
 
     /** Gets the http status code. */

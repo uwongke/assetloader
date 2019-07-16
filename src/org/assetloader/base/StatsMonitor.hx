@@ -36,7 +36,7 @@ class StatsMonitor {
 
         _onOpen = new LoaderSignal();
         _onProgress = new ProgressSignal();
-        _onComplete = new LoaderSignal(ILoadStats);
+        _onComplete = new LoaderSignal([ILoadStats]);
     }
 
     /** Adds ILoader for monitoring. */
@@ -116,27 +116,34 @@ class StatsMonitor {
 
     private function open_handler(signal : LoaderSignal) : Void {
         _stats.open();
-        _onOpen.dispatch(signal.loader);
+        _onOpen.dispatch([signal.loader]);
     }
 
     private function progress_handler(signal : ProgressSignal) : Void {
-        var bytesLoaded : Int;
-        var bytesTotal : Int;
+        var bytesLoaded : Int = 0;
+        var bytesTotal : Int = 0;
         for (loader in _loaders) {
             bytesLoaded += loader.stats.bytesLoaded;
             bytesTotal += loader.stats.bytesTotal;
         }
         _stats.update(bytesLoaded, bytesTotal);
 
-        _onProgress.dispatch(signal.loader, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
-        _stats.bytesLoaded, _stats.bytesTotal);
+        _onProgress.dispatch([
+            signal.loader,
+            _stats.latency,
+            _stats.speed,
+            _stats.averageSpeed,
+            _stats.progress,
+            _stats.bytesLoaded,
+            _stats.bytesTotal]
+        );
     }
 
     private function complete_handler(signal : LoaderSignal, payload : Dynamic) : Void {
         _numComplete++;
         if (_numComplete == _numLoaders) {
             _stats.done();
-            _onComplete.dispatch(null, _stats);
+            _onComplete.dispatch([null, _stats]);
         }
     }
 

@@ -1,5 +1,7 @@
 package org.assetloader.core;
 
+import org.assetloader.signals.ProgressSignal;
+import org.assetloader.signals.HttpStatusSignal;
 import org.assetloader.signals.ErrorSignal;
 import openfl.net.URLRequest;
 import org.assetloader.signals.LoaderSignal;

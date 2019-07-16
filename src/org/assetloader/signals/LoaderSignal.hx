@@ -1,5 +1,6 @@
 package org.assetloader.signals;
 
+import js.Browser;
 import org.assetloader.core.ILoader;
 import org.osflash.signals.Signal;
 
@@ -17,20 +18,23 @@ class LoaderSignal extends Signal {
             default: valueClasses;
         }
 
+        Browser.console.log("------------------");
+        Browser.console.log(valueClasses);
+
         _signalType = (_signalType != null) ? _signalType : LoaderSignal;
 
         if (valueClasses.length == 1 && Std.is(valueClasses[0], Array)) {
             valueClasses = valueClasses[0];
         }
 
-        this.valueClasses = [_signalType].concat(null, valueClasses);
+        //this.valueClasses = [_signalType].concat.apply(null, valueClasses);
     }
 
     /** First argument must be the loader to which this signal belongs. */
     override public function dispatch(args : Array<Dynamic> = null) : Void {
         _loader = args.shift();
 
-        super.dispatch([null, [this].concat(null, args)]);
+        //super.dispatch.apply(null, [this].concat.apply(null, args));
     }
 
     /** Gets the loader that dispatched this signal. */
