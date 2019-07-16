@@ -77,7 +77,7 @@ class URLParser {
     }
 
     /** Gets the file extension of the url. E.g. txt, php, etc. */
-    private var _fileExtension : String;
+    private var _fileExtension : String = "";
     public var fileExtension(get, never) : String;
     private function get_fileExtension() : String {
         return _fileExtension;
@@ -153,15 +153,34 @@ class URLParser {
                     }
                 }
             }
-            /** Handle fileExtension */
+
+            /** Handle urlVariables */
+            if(_urlVariables != null){
+                _urlVariables = new URLVariables(_urlVariables);
+            }
+
+            /** Corner cases */
+
+            if(_host.indexOf(".") == -1){
+                _isValid = false;
+                _path = "/"+_host+path;
+                _host = null;
+            }
+
+            /** duplicate '/' */
+            _path = StringTools.replace(_path, "//", "/");
+
+            /** fileName */
+            if(_fileName == ""){
+                _fileName = path.substr(path.lastIndexOf("/") + 1);
+            }
+
+            /** fileExtension */
             if(_fileName != null){
                 if(_fileName.indexOf(".") != -1){
                     _fileExtension = _fileName.substr(_fileName.lastIndexOf(".") + 1);
                 }
             }
-
-            /** Handle urlVariables */
-            _urlVariables = new URLVariables(_urlVariables);
         }
     }
 }
