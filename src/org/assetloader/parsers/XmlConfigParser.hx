@@ -58,10 +58,28 @@ class XmlConfigParser implements IConfigParser {
 
     private function parseXml(data: Xml, inheritFrom : ConfigVO = null) : Void {
         var rootVo : ConfigVO = parseVo(data, inheritFrom);
+
+        var access = new haxe.xml.Access(data.firstElement());
+        var children: Array<Xml> = Reflect.field(access, "children");
+
+        children.foreach((child)->{
+            var children: Array<Xml> = Reflect.field(child, "children");
+            if(children.length !=0){
+                var vo : ConfigVO = parseVo(child, rootVo);
+                if(vo.id != "" && vo.src == "") {
+                    Browser.console.log(vo);
+                }
+
+            }
+            return true;
+        });
+
     }
 
     private function parseVo(data: Xml, inheritFrom : ConfigVO = null) : ConfigVO {
         inheritFrom = inheritFrom == null ? new ConfigVO() : inheritFrom;
+
+        //Browser.console.log(data);
 
         var child : ConfigVO = new ConfigVO();
         var attributes = Reflect.fields(inheritFrom);
@@ -79,7 +97,7 @@ class XmlConfigParser implements IConfigParser {
         });
 
         /** Temp / Debug */
-        Browser.console.log(child);
+        //Browser.console.log(access);
 
         return child;
     }
