@@ -1,0 +1,105 @@
+{
+    "loader": {
+        "_attributes": {
+            "connections": "3",
+            "base": "test"
+        },
+        "group": {
+            "_attributes": {
+                "id": "SAMPLE_GROUP_01",
+                "connections": "1",
+                "preventCache": "false"
+            },
+            "group": {
+                "_attributes": {
+                    "id": "SAMPLE_GROUP_02",
+                    "connections": "2"
+                },
+                "asset": [
+                    {
+                        "_attributes": {
+                            "id": "SAMPLE_TXT",
+                            "src": "sampleTXT.txt"
+                        }
+                    },
+                    {
+                        "_attributes": {
+                            "id": "SAMPLE_JSON",
+                            "src": "sampleJSON.json"
+                        }
+                    },
+                    {
+                        "_attributes": {
+                            "id": "SAMPLE_XML",
+                            "src": "sampleXML.xml"
+                        }
+                    },
+                    {
+                        "_attributes": {
+                            "id": "SAMPLE_CSS",
+                            "src": "sampleCSS.css"
+                        }
+                    }
+                ]
+            },
+            "asset": [
+                {
+                    "_attributes": {
+                        "id": "SAMPLE_BINARY",
+                        "src": "sampleZIP.zip",
+                        "weight": "3493"
+                    }
+                },
+                {
+                    "_attributes": {
+                        "id": "SAMPLE_SOUND",
+                        "src": "sampleSOUND.mp3",
+                        "weight": "213 kb"
+                    }
+                }
+            ]
+        },
+        "assets": {
+            "_attributes": {
+                "preventCache": "true"
+            },
+            "asset": [
+                {
+                    "_attributes": {
+                        "id": "SAMPLE_IMAGE",
+                        "src": "sampleIMAGE.png",
+                        "weight": "5 kb",
+                        "fillColor": "0x0",
+                        "smoothing": "true",
+                        "transparent": "true"
+                    }
+                },
+                {
+                    "_attributes": {
+                        "id": "SAMPLE_VIDEO",
+                        "src": "sampleVIDEO.flv",
+                        "weight": "0.312 mb",
+                        "onDemand": "true"
+                    }
+                },
+                {
+                    "_attributes": {
+                        "id": "SAMPLE_SWF",
+                        "src": "sampleSWF.swf",
+                        "weight": "526",
+                        "priority": "1"
+                    }
+                }
+            ]
+        },
+        "asset": {
+            "_attributes": {
+                "id": "SAMPLE_ERROR",
+                "base": "/\\",
+                "src": "fileThatDoesNotExist.php\\",
+                "type": "image\\",
+                "retries": "5\\"
+            }
+        }
+    }
+}

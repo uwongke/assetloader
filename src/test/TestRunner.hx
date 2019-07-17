@@ -1,5 +1,6 @@
 package test;
 
+import test.org.assetloader.parsers.XmlConfigParserTest;
 import test.org.assetloader.base.ParamTest;
 import test.org.assetloader.parsers.URLParserTest;
 //import test.org.assetloader.base.StatsMonitorTest;
@@ -10,8 +11,10 @@ class TestRunner {
 
     public function new() {
         /** Add Test Cases here.... */
-        r.add(new ParamTest());
-        r.add(new URLParserTest());
+        //r.add(new ParamTest());
+        //r.add(new URLParserTest());
+        r.add(new XmlConfigParserTest());
+
 
         //r.add(new StatsMonitorTest());
 
