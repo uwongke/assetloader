@@ -114,15 +114,14 @@ class XmlConfigParser implements IConfigParser {
         /** wrap the Xml for Access */
         var access = new haxe.xml.Access(data.firstElement());
 
-        /** Set the fields either to Xml value via reflection */
+        /**Set the fields either to Xml value or default (via reflection) */
         attributes.foreach((it)->{
             switch(access.has.resolve(it)){
                 case true: Reflect.setField(child, it, access.att.resolve(it));
-                default: {};
+                default: Reflect.setField(child, it, Reflect.field(inheritFrom, it));
             }
             return true;
         });
-
         Browser.console.log(child);
         return child;
     }
@@ -187,5 +186,3 @@ class XmlConfigParser implements IConfigParser {
 //        return defaultReturn;
 //    }
 }
-
-//default: Reflect.setField(child, it, Reflect.field(child, it));
