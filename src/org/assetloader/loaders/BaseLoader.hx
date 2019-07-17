@@ -19,7 +19,9 @@ class BaseLoader extends AbstractLoader implements ILoader {
     private var _eventDispatcher : IEventDispatcher;
 
     public function new(request : URLRequest, type : String, id : String = null) {
-        super(id || request.url, type, request);
+        var param = id != null ? id : request.url;
+        super(param, type, request);
+        //super(id || request.url, type, request);
     }
 
     override public function start() : Void {
@@ -72,40 +74,39 @@ class BaseLoader extends AbstractLoader implements ILoader {
             _inProgress = false;
             _failed = true;
             removeListeners(_eventDispatcher);
-            _onError.dispatch(this, event.type, event.text);
+            _onError.dispatch([this, event.type, event.text]);
         }
     }
 
     private function httpStatus_handler(event : HTTPStatusEvent) : Void {
-        _onHttpStatus.dispatch(this, event.status);
+        _onHttpStatus.dispatch([this, event.status]);
     }
 
     private function open_handler(event : Event) : Void {
         _stats.open();
         _inProgress = true;
-        _onOpen.dispatch(this);
+        _onOpen.dispatch([this]);
     }
 
     private function progress_handler(event : ProgressEvent) : Void {
-        _stats.update(event.bytesLoaded, event.bytesTotal);
-        _onProgress.dispatch(this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
-        _stats.bytesLoaded, _stats.bytesTotal
-        );
+        //_stats.update(event.bytesLoaded, event.bytesTotal);
+        _onProgress.dispatch(
+            [this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
+        _stats.bytesLoaded, _stats.bytesTotal]);
     }
 
     private function complete_handler(event : Event) : Void {
         _stats.done();
-        _onProgress.dispatch(this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
-        _stats.bytesLoaded, _stats.bytesTotal
-        );
+        _onProgress.dispatch([this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
+        _stats.bytesLoaded, _stats.bytesTotal]);
 
         _inProgress = false;
         _failed = false;
         _loaded = true;
-        _onComplete.dispatch(this, _data);
+        _onComplete.dispatch([this, _data]);
     }
 
-    private function addListeners(dispatcher : IEventDispatcher) : Void {
+    private function addListeners(dispatcher : IEventDispatcher): Void {
         if (dispatcher != null) {
             dispatcher.addEventListener(IOErrorEvent.IO_ERROR, error_handler);
             dispatcher.addEventListener(SecurityErrorEvent.SECURITY_ERROR, error_handler);
@@ -155,7 +156,7 @@ class BaseLoader extends AbstractLoader implements ILoader {
 
         var urlParser : URLParser = new URLParser(_request.url);
 
-        if (!urlParser.host) {
+        if (urlParser.host == null || urlParser.host == "") {
             _request.url = value + urlParser.url;
             return true;
         }

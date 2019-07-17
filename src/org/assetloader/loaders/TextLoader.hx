@@ -5,10 +5,12 @@ import openfl.events.Event;
 import openfl.utils.ByteArray;
 import openfl.errors.Error;
 import openfl.events.IEventDispatcher;
-import org.assetloader.signals.LoaderSignal;
-import org.assetloader.base.AssetType;
 import openfl.net.URLRequest;
 import openfl.net.URLStream;
+
+import org.assetloader.signals.LoaderSignal;
+import org.assetloader.base.AssetType;
+
 class TextLoader extends BaseLoader {
 
     private var _loader : URLStream;
@@ -18,8 +20,8 @@ class TextLoader extends BaseLoader {
     }
 
     override private function initSignals() : Void {
-        super.initSignals();
-        _onComplete = new LoaderSignal(String);
+        //super.initSignals();
+        //_onComplete = new LoaderSignal(String);
     }
 
     override private function constructLoader() : IEventDispatcher {

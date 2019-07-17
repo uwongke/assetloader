@@ -1,5 +1,6 @@
 package org.assetloader.base;
 
+import com.poptropica.interfaces.IPlatform;
 import org.assetloader.signals.ErrorSignal;
 import org.assetloader.core.IAssetLoader;
 import org.assetloader.parsers.XmlConfigParser;
@@ -8,7 +9,6 @@ import org.assetloader.core.ILoader;
 import openfl.utils.Dictionary;
 import org.assetloader.signals.LoaderSignal;
 import org.assetloader.core.IConfigParser;
-
 
 class AssetLoaderBase extends AbstractLoader {
     private var configParser(get, never) : IConfigParser;
@@ -22,12 +22,11 @@ class AssetLoaderBase extends AbstractLoader {
     public var failOnError(get, set) : Bool;
     public var onConfigLoaded(get, never) : LoaderSignal;
 
-
     private var _onConfigLoaded : LoaderSignal;
 
-    private var _loaders : Dictionary;
+    private var _loaders : Dictionary<Dynamic, Dynamic>;
 
-    private var _assets : Dictionary;
+    private var _assets : Dictionary<Dynamic, Dynamic>;
 
     private var _ids : Array<Dynamic>;
 
@@ -108,7 +107,7 @@ class AssetLoaderBase extends AbstractLoader {
 
         updateTotalBytes();
 
-        loader.onAddedToParent.dispatch(loader, this);
+        loader.onAddedToParent.dispatch([loader, this]);
     }
 
     public function remove(id : String) : ILoader {
@@ -236,12 +235,12 @@ class AssetLoaderBase extends AbstractLoader {
 
     private function error_handler(signal : ErrorSignal) : Void {
         _failed = true;
-        _onError.dispatch(this, signal.type, signal.message);
+        _onError.dispatch([this, signal.type, signal.message]);
     }
 
     private function open_handler(signal : LoaderSignal) : Void {
         _stats.open();
-        _onOpen.dispatch(this);
+        _onOpen.dispatch([this]);
     }
 
     private function progress_handler(signal : LoaderSignal) : Void {
@@ -258,9 +257,8 @@ class AssetLoaderBase extends AbstractLoader {
 
         _stats.update(bytesLoaded, bytesTotal);
 
-        _onProgress.dispatch(this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
-        _stats.bytesLoaded, _stats.bytesTotal
-        );
+        _onProgress.dispatch([this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
+        _stats.bytesLoaded, _stats.bytesTotal]);
     }
 
     private function complete_handler(signal : LoaderSignal, data : Dynamic = null) : Void {
@@ -268,7 +266,7 @@ class AssetLoaderBase extends AbstractLoader {
         _inProgress = false;
         _stats.done();
 
-        _onComplete.dispatch(this, data);
+        _onComplete.dispatch([this, data]);
     }
 
     private function get_numConnections() : Int {

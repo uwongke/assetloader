@@ -29,7 +29,8 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 		</loader>";
 
     override public function setup() {
-        _parser = new XmlConfigParser();
+        _parser = new XmlConfigParser(null);
+        //_assetloader = cast new AssetLoaderBase(null, null);
     }
 
     override public function tearDown() {}

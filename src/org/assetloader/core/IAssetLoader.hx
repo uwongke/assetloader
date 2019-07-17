@@ -64,8 +64,8 @@ interface IAssetLoader extends ILoader {
     function add(id : String, request : URLRequest, type : String = "AUTO", params : Array<Dynamic> = null) : ILoader;
 
     /** Adds loader to loading queue. */
-    function addLoader(loader : ILoader) : Void
-    ;
+    function addLoader(loader : ILoader):Void;
+
     /** Adds multiple assets to the loading queue. */
     function addConfig(data : String): Void;
 

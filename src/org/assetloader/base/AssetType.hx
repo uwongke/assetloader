@@ -6,7 +6,7 @@ class AssetType {
 
     public static inline var TEXT : String = "TEXT";
     public static inline var JSON : String = "JSON";
-    public static inline var FastXML : String = "XML";
+    public static inline var XML : String = "XML";
     public static inline var CSS : String = "CSS";
 
     public static inline var BINARY : String = "BINARY";

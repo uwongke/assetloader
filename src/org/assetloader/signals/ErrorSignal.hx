@@ -1,12 +1,12 @@
 package org.assetloader.signals;
 
 class ErrorSignal extends LoaderSignal {
-    public var type(get, never) : String;
-    public var message(get, never) : String;
+    public var type(get, never):String;
+    public var message(get, never):String;
 
-    private var _type : String;
+    private var _type:String;
 
-    private var _message : String;
+    private var _message:String;
 
     public function new(valueClasses : Array<Dynamic> = null) {
         valueClasses = switch(valueClasses) {
