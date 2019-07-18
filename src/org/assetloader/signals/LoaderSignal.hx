@@ -18,8 +18,8 @@ class LoaderSignal extends Signal {
             default: valueClasses;
         }
 
-        Browser.console.log("------------------");
-        Browser.console.log(valueClasses);
+        //Browser.console.log("------------------");
+        //Browser.console.log(valueClasses);
 
         _signalType = (_signalType != null) ? _signalType : LoaderSignal;
 

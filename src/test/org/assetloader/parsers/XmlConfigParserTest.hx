@@ -1,5 +1,9 @@
 package test.org.assetloader.parsers;
 
+import js.Browser;
+import as3hx.Error;
+import org.assetloader.core.IConfigParser;
+import org.assetloader.AssetLoader;
 import org.assetloader.parsers.XmlConfigParser;
 import org.assetloader.core.IAssetLoader;
 
@@ -30,15 +34,55 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 
     override public function setup() {
         _parser = new XmlConfigParser(null);
-        //_assetloader = cast new AssetLoaderBase(null, null);
+        _assetloader = new AssetLoader(null);
     }
 
     override public function tearDown() {}
 
-    public function test_one(){
-        _parser.parse(null, _data);
+    //public function test_one():Void {
+    //    _parser.parse(_assetloader, _data);
+    //    assertTrue(true);
+    //}
+
+    public function test_implementing():Void {
+        trace("\nXmlConfigParser should implement IConfigParser");
+        assertTrue(Std.is(_parser, IConfigParser));
+    }
+
+    public function test_isValid():Void {
+        trace("\nXmlConfigParser#isValid should be true with valid data");
+        assertTrue(_parser.isValid(_data));
+    }
+
+    //public function test_isValidBrokenTagAdded():Void {
+        //trace("\nXmlConfigParser#isValid should be false with a broken tag added");
+        //try {
+        //    _parser.isValid(_data + "</brokenTag>");
+        //} catch(e: Error){
+        //    assertTrue(true);
+        //}
+        /**This is throwing internally but works as expected. */
+    //}
+
+    //public function test_isValidUrlPassed():Void {
+        //trace("\nXmlConfigParser#isValid should be false if a relative path is passed");
+        //assertFalse(_parser.isValid("test/testXML.xml"));
+        //trace("\nXmlConfigParser#isValid should be false if a url is passed");
+        //assertFalse(_parser.isValid("http://www.matan.co.za/AssetLoader/test/testXML.xml"));
+    //}
+
+    public function test_parseAndTestAllLoaders():Void {
+        _parser.parse(_assetloader, _data);
+        //Browser.console.log(_assetloader.loaders)
+        //_assetloader.hasLoader('SAMPLE_GROUP_01');
+        //trace("\nAssetLoader#hasLoader('SAMPLE_GROUP_01') should be true");
+        //assertTrue(_assetloader.hasLoader('SAMPLE_GROUP_01'));
+
         assertTrue(true);
     }
+
+
+
 }
 
 

@@ -1,5 +1,6 @@
 package org.assetloader.loaders;
 
+import js.Browser;
 import openfl.net.URLVariables;
 import org.assetloader.parsers.URLParser;
 import openfl.events.SecurityErrorEvent;
@@ -15,21 +16,18 @@ import org.assetloader.core.ILoader;
 import org.assetloader.base.AbstractLoader;
 
 class BaseLoader extends AbstractLoader implements ILoader {
-
     private var _eventDispatcher : IEventDispatcher;
 
     public function new(request : URLRequest, type : String, id : String = null) {
         var param = id != null ? id : request.url;
         super(param, type, request);
-        //super(id || request.url, type, request);
     }
 
     override public function start() : Void {
         if (!_invoked) {
             _invoked = true;
             _stopped = false;
-
-            _eventDispatcher = constructLoader();
+            _eventDispatcher = constructLoader(); /** TODO@Wolfie -> How can this be desireable? */
 
             addListeners(_eventDispatcher);
 
@@ -44,7 +42,7 @@ class BaseLoader extends AbstractLoader implements ILoader {
         }
     }
 
-    private function constructLoader() : IEventDispatcher {
+    private function constructLoader():IEventDispatcher {
         return null;
     }
 
@@ -89,7 +87,7 @@ class BaseLoader extends AbstractLoader implements ILoader {
     }
 
     private function progress_handler(event : ProgressEvent) : Void {
-        //_stats.update(event.bytesLoaded, event.bytesTotal);
+        _stats.update(Std.int(event.bytesLoaded), Std.int(event.bytesTotal));
         _onProgress.dispatch(
             [this, _stats.latency, _stats.speed, _stats.averageSpeed, _stats.progress,
         _stats.bytesLoaded, _stats.bytesTotal]);

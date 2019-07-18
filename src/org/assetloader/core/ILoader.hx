@@ -81,6 +81,7 @@ interface ILoader {
     /** Dispatches when an ILoader's start method is called. NOTE: This is dispatched just BEFORE
 		the actual loading operation starts. */
     var onStart(get, never): LoaderSignal;
+    public function get_onStart() : LoaderSignal;
 
     /** Dispatches when an ILoader's stop method is called. */
     var onStop(get, never): LoaderSignal;

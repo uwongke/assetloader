@@ -1,6 +1,7 @@
 package org.assetloader.parsers;
 
 
+import openfl.errors.Error;
 import openfl.net.URLRequest;
 import org.assetloader.core.ILoader;
 import org.assetloader.base.LoaderFactory;
@@ -27,22 +28,31 @@ using Lambda;
 
 class XmlConfigParser implements IConfigParser {
 
-    private var _assetloader : IAssetLoader;
+    /** AssetLoader Property */
+    private var _assetloader:IAssetLoader;
+    @:isvar public var assetloader(get, set):IAssetLoader;
+    public function get_assetloader(): IAssetLoader {
+        return _assetloader;
+    }
+    public function set_assetloader(value: IAssetLoader): IAssetLoader {
+        return _assetloader = value;
+    }
+
     private var _loaderFactory : LoaderFactory;
     private var _platform : IPlatform;
 
     public function new(platform : IPlatform) {
-        //_platform = platform;
+        _platform = platform;
     }
 
     public function isValid(data : String) : Bool {
-        //var xml : FastXML;
+        var xml: Xml;
 
-        //try {
-        //    xml = new FastXML(data);
-        //} catch (error : Error) {
-        //    return false;
-        //}
+        try {
+            xml = Xml.parse(data);
+        } catch (error : Error) {
+            return false;
+        }
 
         //if (xml.node.nodeKind.innerData() != "element") {
         //    return false;
@@ -56,8 +66,8 @@ class XmlConfigParser implements IConfigParser {
         _loaderFactory = new LoaderFactory(_platform);
         parseXml(Xml.parse(data));
 
-        _assetloader = null;
-        _loaderFactory = null;
+        //_assetloader = null;
+        //_loaderFactory = null;
     }
 
     private function parseXml(data: Xml, inheritFrom : ConfigVO = null) : Void {
@@ -72,12 +82,13 @@ class XmlConfigParser implements IConfigParser {
                 var vo : ConfigVO = parseVo(child, rootVo);
                 if((vo.id != "" || vo.id != null) && (vo.src == "" || vo.src == null)) {
                     var group : IAssetLoader = parseGroup(vo);
-                    //_assetloader.addLoader(group);
+                    //Browser.console.log("IS THIS CONDITION WORKING?????");
+                    //Browser.console.log(group);
+                    //assetloader.addLoader(group);
                     //group.addConfig(vo.xml);
                 }
                 else if((vo.id != "" || vo.id != null) && (vo.src != "" || vo.src != null)){
-                    Browser.console.log("IS THIS CONDITION WORKING?????");
-                    _assetloader.addLoader(parseAsset(vo));
+                    assetloader.addLoader(parseAsset(vo));
                 }
 
                 else{
@@ -90,14 +101,15 @@ class XmlConfigParser implements IConfigParser {
     }
 
     private function parseGroup(vo : ConfigVO) : IAssetLoader {
-        var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
-        //Browser.console.log("============================");
-        //Browser.console.log(loader);
-        if(loader !=null){
-            loader.numConnections = vo.connections;
-        }
 
-        return loader;
+        var factory = _loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo));
+
+       //var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
+        //var loader : IAssetLoader =
+        Browser.console.log("FACTORYFACTORYFACTORYFACTORYFACTORYFACTORYFACTORY");
+        Browser.console.log(factory);
+        //loader.numConnections = vo.connections;
+        return null;
     }
 
     private function parseAsset(vo : ConfigVO) : ILoader {
@@ -122,7 +134,7 @@ class XmlConfigParser implements IConfigParser {
             }
             return true;
         });
-        Browser.console.log(child);
+        child.xml = data;
         return child;
     }
 

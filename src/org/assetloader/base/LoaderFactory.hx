@@ -6,21 +6,28 @@ package org.assetloader.base;
 
 import org.assetloader.core.IParam;
 import org.assetloader.loaders.XMLLoader;
-
-import org.assetloader.parsers.URLParser;
-import js.Browser;
-import com.poptropica.interfaces.IPlatform;
-
 import org.assetloader.core.ILoader;
-//import org.assetloader.parsers.URLParser;
-//import org.assetloader.loaders.SoundLoader;
-//import org.assetloader.loaders.SWFLoader;
-//import org.assetloader.loaders.XMLLoader;
+import org.assetloader.parsers.URLParser;
+
+import com.poptropica.interfaces.IPlatform;
 import openfl.net.URLRequest;
-//import org.assetloader.core.IParam;
+
+import js.Browser;
+
+using Lambda;
 
 class LoaderFactory {
-    private var _loader : AbstractLoader;
+
+    /** Loader Property */
+    private var _loader: AbstractLoader;
+    @:isvar public var loader(get, set):AbstractLoader;
+    public function get_loader(): AbstractLoader {
+        return _loader;
+    }
+    public function set_loader(value: AbstractLoader):AbstractLoader {
+        return _loader = value;
+    }
+
     private var _platform : IPlatform;
 
     public function new(platform : IPlatform) {
@@ -52,33 +59,56 @@ class LoaderFactory {
             type = AssetType.GROUP;
         }
 
-        //constructLoader(type, id, request);
+        constructLoader(type, id, request);
 
 
-        //if (params != null) {
-        //    processParams(params);
-        //}
+        if (params != null) {
+            processParams(params);
+        }
 
-        return _loader;
-        //return null;
+        return loader;
     }
 
     private function processParams(assetParams : Array<Dynamic>) : Void {
+        Browser.console.log("/////////////////////processParams");
         var pL: Int = assetParams.length;
-        for (i in 0...pL) {
+       // Browser.console.log(pL);
+        //var i: Int = 0;
+
+        Browser.console.log(loader);
+
+        assetParams.foreach((item)->{
+            if (Std.is(item, IParam)) {
+                var param : IParam = item;
+                //_loader.setParam(param.id, param.value);
+
+                Browser.console.log(item);
+            }
+            return true;
+        });
+
+        //for (i in 0...pL) {
             //Browser.console.log(assetParams[i]);
-            if (Std.is(assetParams[i], IParam)) {
-                var param : IParam = assetParams[i];
-                _loader.setParam(param.id, param.value);
-            }
-            else if (Std.is(assetParams[i], Array)) {
-                processParams(assetParams[i]);
-            }
-        }
+        //    if (Std.is(assetParams[i], IParam)) {
+        //        var param : IParam = assetParams[i];
+        //        _loader.setParam(param.id, param.value);
+        //    }
+        //    else if (Std.is(assetParams[i], Array)) {
+        //        processParams(assetParams[i]);
+        //    }
+        //}
     }
 
     private function getTypeFromExtension(extension : String) : String {
         extension = extension == null ? "" : extension.toLowerCase();
+        //if (extension == null || extension == "") {
+        //    extension = "xml";
+        //}
+
+        extension = extension.toLowerCase();
+
+        //Browser.console.log("===================");
+        //Browser.console.log(extension);
 
         var textExt: Array<Dynamic> = ["txt", "js", "html", "htm", "php", "asp", "aspx", "jsp", "cfm"];
         var imageExt: Array<Dynamic> = ["jpg", "jpeg", "png", "gif"];
@@ -91,6 +121,7 @@ class LoaderFactory {
             case "zip":  return AssetType.BINARY;
             case "swf": return AssetType.SWF;
             case "mp3": return AssetType.SOUND;
+            case "": return AssetType.GROUP;
             default: {
                 if (testExtenstion(textExt, extension)) {
                     return AssetType.TEXT;
@@ -119,10 +150,13 @@ class LoaderFactory {
     }
 
     private function constructLoader(type : String, id : String, request : URLRequest) : Void {
+        Browser.console.log("=========constructLoader===============");
         Browser.console.log(type);
         switch (type) {
             case AssetType.XML:
-                _loader = new XMLLoader(request, id);
+                loader = new XMLLoader(request, id);
+            case AssetType.GROUP:
+                _loader = new AssetLoader(null, id);
 
             //case AssetType.SWF:
                 /** rlh temp for Haxe */

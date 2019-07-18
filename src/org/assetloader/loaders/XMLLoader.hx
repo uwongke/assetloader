@@ -21,7 +21,7 @@ class XMLLoader extends TextLoader {
 
     override private function initSignals() : Void {
         super.initSignals();
-        //_onComplete = new LoaderSignal(Xml);
+        _onComplete = new LoaderSignal([Xml]);
     }
 
     override public function destroy() : Void {

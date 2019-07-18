@@ -6,17 +6,10 @@ import org.assetloader.signals.ProgressSignal;
 import org.assetloader.signals.LoaderSignal;
 import org.assetloader.signals.ErrorSignal;
 import org.assetloader.core.IParam;
-import haxe.Constraints.Function;
-
-//import org.assetloader.core.IParam;
-//import org.assetloader.core.IAssetLoader;
-//import org.assetloader.signals.ProgressSignal;
-//import org.assetloader.signals.HttpStatusSignal;
-//import org.assetloader.signals.LoaderSignal;
-//import org.assetloader.signals.ErrorSignal;
 import org.assetloader.core.ILoadStats;
 import org.assetloader.core.ILoader;
 
+import haxe.Constraints.Function;
 import openfl.net.URLRequest;
 
 class AbstractLoader implements ILoader {
@@ -143,7 +136,7 @@ class AbstractLoader implements ILoader {
 
     /** onStart Property */
     public var onStart(get, never) : LoaderSignal;
-    private function get_onStart() : LoaderSignal {
+    public function get_onStart() : LoaderSignal {
         return _onStart;
     }
 
@@ -212,112 +205,108 @@ class AbstractLoader implements ILoader {
 
         _stats = new LoaderStats();
 
-        //initParams();
-        //initSignals();
+        initParams();
+        initSignals();
     }
 
     private function initParams():Void {
-    //    _params = { };
+        _params = {};
 
-    //    setParam(Param.PRIORITY, 0);
-    //    setParam(Param.RETRIES, 3);
-    //    setParam(Param.ON_DEMAND, false);
-    //    setParam(Param.WEIGHT, 0);
+        setParam(Param.PRIORITY, 0);
+        setParam(Param.RETRIES, 3);
+        setParam(Param.ON_DEMAND, false);
+        setParam(Param.WEIGHT, 0);
     }
 
     private function initSignals():Void {
-    //    _onError = new ErrorSignal();
-    //    _onHttpStatus = new HttpStatusSignal();
+        _onError = new ErrorSignal();
+        _onHttpStatus = new HttpStatusSignal();
 
-    //    _onOpen = new LoaderSignal();
-    //    _onProgress = new ProgressSignal();
-    //    _onComplete = new LoaderSignal();
+        _onOpen = new LoaderSignal();
+        _onProgress = new ProgressSignal();
+        _onComplete = new LoaderSignal();
 
-    //    _onAddedToParent = new LoaderSignal([IAssetLoader]);
-    //    _onRemovedFromParent = new LoaderSignal([IAssetLoader]);
+        _onAddedToParent = new LoaderSignal([IAssetLoader]);
+        _onRemovedFromParent = new LoaderSignal([IAssetLoader]);
 
-    //    _onAddedToParent.add(addedToParent_handler);
-    //    _onRemovedFromParent.add(removedFromParent_handler);
+        _onAddedToParent.add(addedToParent_handler);
+        _onRemovedFromParent.add(removedFromParent_handler);
 
-    //    _onStart = new LoaderSignal();
-    //    _onStop = new LoaderSignal();
+        _onStart = new LoaderSignal();
+        _onStop = new LoaderSignal();
     }
 
     public function start():Void {
-    //    _stats.start();
-    //    _onStart.dispatch(this);
+        _stats.start();
+        _onStart.dispatch([this]);
     }
 
     public function stop() : Void {
-    //    _stopped = true;
-    //    _inProgress = false;
-    //    _onStop.dispatch(this);
+        _stopped = true;
+        _inProgress = false;
+        _onStop.dispatch([this]);
     }
 
     public function destroy():Void {
-    //    stop();
+        stop();
+        _stats.reset();
+        _data = null;
 
-    //    _stats.reset();
-
-    //    _data = null;
-
-    //    _invoked = false;
-    //    _inProgress = false;
-    //    _stopped = false;
-    //    _loaded = false;
+        _invoked = false;
+        _inProgress = false;
+        _stopped = false;
+        _loaded = false;
     }
 
     private function addedToParent_handler(signal : LoaderSignal, parent : IAssetLoader):Void {
-    //    if (_parent != null) {
-    //        throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINED_BY_OTHER(_id, _parent.id));
-    //    }
+        if (_parent != null) {
+            throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINED_BY_OTHER(_id, _parent.id));
+        }
 
-    //    _parent = parent;
+        _parent = parent;
 
         /** Inherit prevent cache from parent if undefined */
-    //    if (Reflect.field(_params, Std.string(Param.PREVENT_CACHE)) == null) {
-    //        setParam(Param.PREVENT_CACHE, _parent.getParam(Param.PREVENT_CACHE));
-    //    }
+        if (Reflect.field(_params, Std.string(Param.PREVENT_CACHE)) == null) {
+            setParam(Param.PREVENT_CACHE, _parent.getParam(Param.PREVENT_CACHE));
+        }
 
         /** Inherit base from parent if undefined */
-    //    if (Reflect.field(_params, Std.string(Param.BASE)) == null
-    //        || Reflect.field(_params, Std.string(Param.BASE)) == null) {
+        if (Reflect.field(_params, Std.string(Param.BASE)) == null
+            || Reflect.field(_params, Std.string(Param.BASE)) == null) {
 
-    //        setParam(Param.BASE, _parent.getParam(Param.BASE));
-    //    }
+            setParam(Param.BASE, _parent.getParam(Param.BASE));
+        }
     }
 
     private function removedFromParent_handler(signal : LoaderSignal, parent : IAssetLoader) : Void {
-    //    _parent = null;
+        _parent = null;
     }
 
 
     public function hasParam(id: String):Bool {
-    //    if (_parent != null) {
-    //        return (Reflect.field(_params, id) != null) || parent.hasParam(id);
-    //    }
-    //    return (Reflect.field(_params, id) != null);
-        return true;
+        if (_parent != null) {
+            return (Reflect.field(_params, id) != null) || parent.hasParam(id);
+        }
+        return (Reflect.field(_params, id) != null);
     }
 
     public function setParam(id: String, value: Dynamic): Void {
-    //    Reflect.setField(_params, id, value);
+        Reflect.setField(_params, id, value);
 
-    //    switch (id) {
-    //        case Param.WEIGHT:
-    //            _stats.bytesTotal = value;
-    //    }
+        switch (id) {
+            case Param.WEIGHT:
+                _stats.bytesTotal = value;
+        }
     }
 
     public function getParam(id : String):Dynamic {
-    //    if (_parent != null && Reflect.field(_params, id) == null) {
-    //        return parent.getParam(id);
-    //    }
-    //    return Reflect.field(_params, id);
-        return null;
+        if (_parent != null && Reflect.field(_params, id) == null) {
+            return parent.getParam(id);
+        }
+        return Reflect.field(_params, id);
     }
 
     public function addParam(param : IParam):Void {
-        //setParam(param.id, param.value);
+        setParam(param.id, param.value);
     }
 }

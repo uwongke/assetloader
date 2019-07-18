@@ -1,5 +1,7 @@
 package org.assetloader.base;
 
+import js.Browser;
+
 import com.poptropica.interfaces.IPlatform;
 import org.assetloader.signals.ErrorSignal;
 import org.assetloader.core.IAssetLoader;
@@ -11,42 +13,97 @@ import org.assetloader.signals.LoaderSignal;
 import org.assetloader.core.IConfigParser;
 
 class AssetLoaderBase extends AbstractLoader {
-    private var configParser(get, never) : IConfigParser;
-    public var numConnections(get, set) : Int;
-    public var ids(get, never) : Array<Dynamic>;
-    public var numLoaders(get, never) : Int;
-    public var loadedIds(get, never) : Array<Dynamic>;
-    public var numLoaded(get, never) : Int;
-    public var failedIds(get, never) : Array<Dynamic>;
-    public var numFailed(get, never) : Int;
-    public var failOnError(get, set) : Bool;
-    public var onConfigLoaded(get, never) : LoaderSignal;
 
-    private var _onConfigLoaded : LoaderSignal;
+    /** configParser Property */
+    private var configParser(get, never):IConfigParser;
+    private function get_configParser() : IConfigParser {
+        if (_configParser != null) {
+            return _configParser;
+        }
 
-    private var _loaders : Dictionary<Dynamic, Dynamic>;
+        _configParser = new XmlConfigParser(_platform);
+        return _configParser;
+    }
 
-    private var _assets : Dictionary<Dynamic, Dynamic>;
+    /** numConnections Property */
+    private var _numConnections : Int = 3;
+    public var numConnections(get, set):Int;
+    private function get_numConnections() : Int {
+        return _numConnections;
+    }
+    private function set_numConnections(value : Int) : Int {
+        _numConnections = value;
+        return value;
+    }
 
+    /** ids Property */
     private var _ids : Array<Dynamic>;
+    public var ids(get, never):Array<Dynamic>;
+    private function get_ids() : Array<Dynamic> {
+        return _ids;
+    }
 
-    private var _loaderFactory : LoaderFactory;
+    /** numLoaders Property */
+    private var _numLoaders : Int;
+    public var numLoaders(get, never):Int;
+    private function get_numLoaders() : Int {
+        return _numLoaders;
+    }
+
+    /** loadedIds Property */
+    private var _loadedIds : Array<Dynamic>;
+    public var loadedIds(get, never):Array<Dynamic>;
+    private function get_loadedIds() : Array<Dynamic> {
+        return _loadedIds;
+    }
+
+    /** numLoaded Property */
+    private var _numLoaded : Int;
+    public var numLoaded(get, never):Int;
+    private function get_numLoaded() : Int {
+        return _numLoaded;
+    }
+
+    /** failedIds Property */
+    private var _failedIds : Array<Dynamic>;
+    public var failedIds(get, never):Array<Dynamic>;
+    private function get_failedIds() : Array<Dynamic> {
+        return _failedIds;
+    }
+
+    /** numFailed Property */
+    private var _numFailed : Int;
+    public var numFailed(get, never):Int;
+    private function get_numFailed() : Int {
+        return _numFailed;
+    }
+
+    /** failOnError Property */
+    private var _failOnError : Bool = true;
+    public var failOnError(get, set):Bool;
+    private function get_failOnError() : Bool {
+        return _failOnError;
+    }
+
+    private function set_failOnError(value : Bool) : Bool {
+        _failOnError = value;
+        return value;
+    }
+
+    /** onConfigLoaded Property */
+    private var _onConfigLoaded : LoaderSignal;
+    public var onConfigLoaded(get, never):LoaderSignal;
+    private function get_onConfigLoaded() : LoaderSignal {
+        return _onConfigLoaded;
+    }
+
+    private var _loaders : Dictionary<String, Dynamic>;
+
+    private var _assets : Dictionary<String, Dynamic>;
+
+    private var _loaderFactory: LoaderFactory;
 
     private var _configParser : IConfigParser;
-
-    private var _numLoaders : Int;
-
-    private var _numConnections : Int = 3;
-
-    private var _loadedIds : Array<Dynamic>;
-
-    private var _numLoaded : Int;
-
-    private var _failedIds : Array<Dynamic>;
-
-    private var _numFailed : Int;
-
-    private var _failOnError : Bool = true;
 
     private var _platform : IPlatform;
 
@@ -72,17 +129,20 @@ class AssetLoaderBase extends AbstractLoader {
 
     public function add(id : String, request : URLRequest, type : String = "AUTO", params : Array<Dynamic> = null) : ILoader {
         var loader : ILoader = _loaderFactory.produce(id, type, request, params);
+
+        //Browser.console.log("+++++++++++AssetLoaderBase::addLoader");
+        //Browser.console.log(loader);
+
         addLoader(loader);
         return loader;
     }
 
-    public function addLoader(loader : ILoader) : Void {
+    public function addLoader(loader:ILoader):Void {
         if (hasLoader(loader.id)) {
             throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINS_LOADER_WITH_ID(_id, loader.id));
         }
 
-        _loaders[loader.id] = loader;
-
+        _loaders.set(loader.id, loader);
         _ids.push(loader.id);
         _numLoaders = _ids.length;
 
@@ -99,15 +159,19 @@ class AssetLoaderBase extends AbstractLoader {
         _failed = (_numFailed > 0);
         _loaded = (_numLoaders == _numLoaded);
 
-        if (loader.getParam(Param.PRIORITY) == 0) {
-            loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
-        }
+        //if (loader.getParam(Param.PRIORITY) == 0) {
+        //    loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
+        //}
 
-        loader.onStart.add(start_handler);
+        Browser.console.log("+++++++++++AssetLoaderBase::addLoader");
 
-        updateTotalBytes();
+        //Browser.console.log(loader.parent.onStart.add);
 
-        loader.onAddedToParent.dispatch([loader, this]);
+        //loader.parent.onStart.add(start_handler);
+
+        //updateTotalBytes();
+
+        //loader.onAddedToParent.dispatch([loader, this]);
     }
 
     public function remove(id : String) : ILoader {
@@ -137,7 +201,7 @@ class AssetLoaderBase extends AbstractLoader {
 
         updateTotalBytes();
 
-        loader.onRemovedFromParent.dispatch(loader, this);
+        loader.onRemovedFromParent.dispatch([loader, this]);
 
         return loader;
     }
@@ -158,22 +222,15 @@ class AssetLoaderBase extends AbstractLoader {
         var bytesTotal : Int = 0;
 
         /** AS3HX WARNING could not determine type for var: loader exp: EIdent(_loaders) type: Dictionary */
-        for (loader in _loaders) {
-            if (!loader.getParam(Param.ON_DEMAND)) {
-                bytesTotal += loader.stats.bytesTotal;
-            }
-        }
+        //for (loader in _loaders) {
+        //    if (!loader.getParam(Param.ON_DEMAND)) {
+        //        bytesTotal += loader.stats.bytesTotal;
+        //    }
+        //}
+
+        ///this is irrelivant for now
 
         _stats.bytesTotal = bytesTotal;
-    }
-
-    private function get_configParser() : IConfigParser {
-        if (_configParser != null) {
-            return _configParser;
-        }
-
-        _configParser = new XmlConfigParser(_platform);
-        return _configParser;
     }
 
     private function addListeners(loader : ILoader) : Void {
@@ -250,10 +307,10 @@ class AssetLoaderBase extends AbstractLoader {
         var bytesTotal : Int = 0;
 
         /** AS3HX WARNING could not determine type for var: loader exp: EIdent(_loaders) type: Dictionary */
-        for (loader in _loaders) {
-            bytesLoaded += loader.stats.bytesLoaded;
-            bytesTotal += loader.stats.bytesTotal;
-        }
+        //for (loader in _loaders) {
+        //    bytesLoaded += loader.stats.bytesLoaded;
+        //    bytesTotal += loader.stats.bytesTotal;
+        //}
 
         _stats.update(bytesLoaded, bytesTotal);
 
@@ -269,14 +326,6 @@ class AssetLoaderBase extends AbstractLoader {
         _onComplete.dispatch([this, data]);
     }
 
-    private function get_numConnections() : Int {
-        return _numConnections;
-    }
-
-    private function set_numConnections(value : Int) : Int {
-        _numConnections = value;
-        return value;
-    }
 
     public function getLoader(id : String) : ILoader {
         if (hasLoader(id)) {
@@ -301,6 +350,8 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function hasLoader(id : String) : Bool {
+        Browser.console.log("==============");
+        Browser.console.log(_loaders);
         return _loaders.exists(id);
     }
 
@@ -310,42 +361,5 @@ class AssetLoaderBase extends AbstractLoader {
 
     public function hasAsset(id : String) : Bool {
         return _assets.exists(id);
-    }
-
-    private function get_ids() : Array<Dynamic> {
-        return _ids;
-    }
-
-    private function get_numLoaders() : Int {
-        return _numLoaders;
-    }
-
-    private function get_loadedIds() : Array<Dynamic> {
-        return _loadedIds;
-    }
-
-    private function get_numLoaded() : Int {
-        return _numLoaded;
-    }
-
-    private function get_failedIds() : Array<Dynamic> {
-        return _failedIds;
-    }
-
-    private function get_numFailed() : Int {
-        return _numFailed;
-    }
-
-    private function get_failOnError() : Bool {
-        return _failOnError;
-    }
-
-    private function set_failOnError(value : Bool) : Bool {
-        _failOnError = value;
-        return value;
-    }
-
-    private function get_onConfigLoaded() : LoaderSignal {
-        return _onConfigLoaded;
     }
 }
