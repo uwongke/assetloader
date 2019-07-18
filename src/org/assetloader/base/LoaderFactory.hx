@@ -70,7 +70,7 @@ class LoaderFactory {
     }
 
     private function processParams(assetParams : Array<Dynamic>) : Void {
-        Browser.console.log("/////////////////////processParams");
+        //Browser.console.log("/////////////////////processParams");
         var pL: Int = assetParams.length;
        // Browser.console.log(pL);
         //var i: Int = 0;
@@ -82,7 +82,7 @@ class LoaderFactory {
                 var param : IParam = item;
                 //_loader.setParam(param.id, param.value);
 
-                Browser.console.log(item);
+                //Browser.console.log(item);
             }
             return true;
         });
@@ -150,8 +150,6 @@ class LoaderFactory {
     }
 
     private function constructLoader(type : String, id : String, request : URLRequest) : Void {
-        Browser.console.log("=========constructLoader===============");
-        Browser.console.log(type);
         switch (type) {
             case AssetType.XML:
                 loader = new XMLLoader(request, id);

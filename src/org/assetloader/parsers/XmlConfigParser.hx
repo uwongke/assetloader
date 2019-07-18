@@ -71,7 +71,8 @@ class XmlConfigParser implements IConfigParser {
     }
 
     private function parseXml(data: Xml, inheritFrom : ConfigVO = null) : Void {
-        var rootVo : ConfigVO = parseVo(data, inheritFrom);
+        //var rootVo : ConfigVO = parseVo(data, inheritFrom);
+        var rootVo : ConfigVO = parseVo(data.firstElement(), inheritFrom);
 
         var access = new haxe.xml.Access(data.firstElement());
         var children: Array<Xml> = Reflect.field(access, "children");
@@ -82,34 +83,24 @@ class XmlConfigParser implements IConfigParser {
                 var vo : ConfigVO = parseVo(child, rootVo);
                 if((vo.id != "" || vo.id != null) && (vo.src == "" || vo.src == null)) {
                     var group : IAssetLoader = parseGroup(vo);
-                    //Browser.console.log("IS THIS CONDITION WORKING?????");
-                    //Browser.console.log(group);
-                    //assetloader.addLoader(group);
-                    //group.addConfig(vo.xml);
+                    assetloader.addLoader(group);
+                    group.addConfig(vo.xml.toString());
                 }
                 else if((vo.id != "" || vo.id != null) && (vo.src != "" || vo.src != null)){
                     assetloader.addLoader(parseAsset(vo));
                 }
-
-                else{
+                else {
                     parseXml(child, vo);
                 }
-
             }
             return true;
         });
     }
 
     private function parseGroup(vo : ConfigVO) : IAssetLoader {
-
-        var factory = _loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo));
-
-       //var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
-        //var loader : IAssetLoader =
-        Browser.console.log("FACTORYFACTORYFACTORYFACTORYFACTORYFACTORYFACTORY");
-        Browser.console.log(factory);
-        //loader.numConnections = vo.connections;
-        return null;
+        var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
+        loader.numConnections = vo.connections;
+        return loader;
     }
 
     private function parseAsset(vo : ConfigVO) : ILoader {
@@ -124,12 +115,23 @@ class XmlConfigParser implements IConfigParser {
         var attributes = Reflect.fields(inheritFrom);
 
         /** wrap the Xml for Access */
-        var access = new haxe.xml.Access(data.firstElement());
+        //var access = new haxe.xml.Access(data.firstElement());
+        var access = new haxe.xml.Access(data);
 
         /**Set the fields either to Xml value or default (via reflection) */
         attributes.foreach((it)->{
             switch(access.has.resolve(it)){
-                case true: Reflect.setField(child, it, access.att.resolve(it));
+                case true: {
+                    /** Special handling for conversions */
+                    switch(it){
+                        case("weight"): Browser.console.log("TODO@Wolfie -> weight Conversion!!!");
+                    }
+                    //We also need a bool converter....
+                    if(it == "weight"){
+                        
+                    }
+                    Reflect.setField(child, it, access.att.resolve(it));
+                }
                 default: Reflect.setField(child, it, Reflect.field(inheritFrom, it));
             }
             return true;
@@ -164,10 +166,12 @@ class XmlConfigParser implements IConfigParser {
         return params;
     }
 
-    //private function convertWeight(str : String) : Int {
-    //    if (str == null) {
-    //        return 0;
-    //    }
+    //TODO@Wolfie -> re-introduce weight conversions
+
+    private function convertWeight(str : String) : Int {
+        if (str == null) {
+            return 0;
+        }
 
         //str = StringTools.replace(new as3hx.Compat.Regex(" ", "g"), "");
         //var mbExp : as3hx.Compat.Regex = new as3hx.Compat.Regex("mb", "gi");
@@ -182,8 +186,10 @@ class XmlConfigParser implements IConfigParser {
         //return as3hx.Compat.parseFloat(str);
 
         //str = str.replace(new as3hx.Compat.Regex(" ", "g"), "");
-    //}
+        return 0;
+    }
 
+    //TODO@Wolfie -> re-introduce boolean conversions
 //    private function toBoolean(value : String, defaultReturn : Bool) : Bool {
 //        value = value.toLowerCase();
 //

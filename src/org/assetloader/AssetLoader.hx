@@ -1,22 +1,14 @@
 package org.assetloader;
 
-import org.assetloader.base.AssetLoaderError;
 import openfl.errors.Error;
-import com.poptropica.interfaces.IPlatform;
 import openfl.net.URLRequest;
 
-import org.assetloader.base.AssetType;
-import org.assetloader.base.Param;
-import org.assetloader.base.AssetLoaderBase;
+import com.poptropica.interfaces.IPlatform;
 
+import org.assetloader.base.*;
 import org.assetloader.parsers.URLParser;
-import org.assetloader.core.ILoader;
-import org.assetloader.core.IAssetLoader;
-
-import org.assetloader.signals.ErrorSignal;
-import org.assetloader.signals.LoaderSignal;
-
-
+import org.assetloader.core.*;
+import org.assetloader.signals.*;
 
 class AssetLoader extends AssetLoaderBase implements IAssetLoader {
 

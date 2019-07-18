@@ -1,6 +1,5 @@
 package org.assetloader.loaders;
 
-import js.Browser;
 import openfl.net.URLVariables;
 import org.assetloader.parsers.URLParser;
 import openfl.events.SecurityErrorEvent;
@@ -187,4 +186,3 @@ class BaseLoader extends AbstractLoader implements ILoader {
         _request.url = url;
     }
 }
-

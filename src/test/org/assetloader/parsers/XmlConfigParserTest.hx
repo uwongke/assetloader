@@ -73,10 +73,11 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 
     public function test_parseAndTestAllLoaders():Void {
         _parser.parse(_assetloader, _data);
-        //Browser.console.log(_assetloader.loaders)
-        //_assetloader.hasLoader('SAMPLE_GROUP_01');
+        _assetloader.hasLoader('SAMPLE_GROUP_01');
+
         //trace("\nAssetLoader#hasLoader('SAMPLE_GROUP_01') should be true");
-        //assertTrue(_assetloader.hasLoader('SAMPLE_GROUP_01'));
+        //assertTrue(_assetloader.hasLoader("SAMPLE_GROUP_01"));
+
 
         assertTrue(true);
     }

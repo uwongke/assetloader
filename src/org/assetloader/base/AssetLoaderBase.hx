@@ -12,6 +12,8 @@ import openfl.utils.Dictionary;
 import org.assetloader.signals.LoaderSignal;
 import org.assetloader.core.IConfigParser;
 
+using Lambda;
+
 class AssetLoaderBase extends AbstractLoader {
 
     /** configParser Property */
@@ -129,10 +131,6 @@ class AssetLoaderBase extends AbstractLoader {
 
     public function add(id : String, request : URLRequest, type : String = "AUTO", params : Array<Dynamic> = null) : ILoader {
         var loader : ILoader = _loaderFactory.produce(id, type, request, params);
-
-        //Browser.console.log("+++++++++++AssetLoaderBase::addLoader");
-        //Browser.console.log(loader);
-
         addLoader(loader);
         return loader;
     }
@@ -159,19 +157,13 @@ class AssetLoaderBase extends AbstractLoader {
         _failed = (_numFailed > 0);
         _loaded = (_numLoaders == _numLoaded);
 
-        //if (loader.getParam(Param.PRIORITY) == 0) {
-        //    loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
-        //}
+        if (loader.getParam(Param.PRIORITY) == 0) {
+            loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
+        }
 
-        Browser.console.log("+++++++++++AssetLoaderBase::addLoader");
-
-        //Browser.console.log(loader.parent.onStart.add);
-
-        //loader.parent.onStart.add(start_handler);
-
-        //updateTotalBytes();
-
-        //loader.onAddedToParent.dispatch([loader, this]);
+        loader.onStart.add(start_handler);
+        updateTotalBytes();
+        loader.onAddedToParent.dispatch([loader, this]);
     }
 
     public function remove(id : String) : ILoader {
@@ -219,16 +211,14 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     private function updateTotalBytes() : Void {
-        var bytesTotal : Int = 0;
+        var bytesTotal:Int = 0;
 
-        /** AS3HX WARNING could not determine type for var: loader exp: EIdent(_loaders) type: Dictionary */
-        //for (loader in _loaders) {
-        //    if (!loader.getParam(Param.ON_DEMAND)) {
-        //        bytesTotal += loader.stats.bytesTotal;
-        //    }
-        //}
-
-        ///this is irrelivant for now
+        _loaders.foreach((it->{
+            if (!it.getParam(Param.ON_DEMAND)) {
+                bytesTotal += it._stats.bytesTotal;
+            }
+            return true;
+        }));
 
         _stats.bytesTotal = bytesTotal;
     }
@@ -303,14 +293,14 @@ class AssetLoaderBase extends AbstractLoader {
     private function progress_handler(signal : LoaderSignal) : Void {
         _inProgress = true;
 
-        var bytesLoaded : Int = 0;
-        var bytesTotal : Int = 0;
+        var bytesLoaded:Int = 0;
+        var bytesTotal:Int = 0;
 
-        /** AS3HX WARNING could not determine type for var: loader exp: EIdent(_loaders) type: Dictionary */
-        //for (loader in _loaders) {
-        //    bytesLoaded += loader.stats.bytesLoaded;
-        //    bytesTotal += loader.stats.bytesTotal;
-        //}
+        _loaders.foreach((it->{
+            bytesLoaded += it._stats.bytesLoaded;
+            bytesTotal += it._stats.bytesTotal;
+            return true;
+        }));
 
         _stats.update(bytesLoaded, bytesTotal);
 
@@ -325,7 +315,6 @@ class AssetLoaderBase extends AbstractLoader {
 
         _onComplete.dispatch([this, data]);
     }
-
 
     public function getLoader(id : String) : ILoader {
         if (hasLoader(id)) {
@@ -350,8 +339,8 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function hasLoader(id : String) : Bool {
-        Browser.console.log("==============");
-        Browser.console.log(_loaders);
+        //Browser.console.log("==================================");
+        //Browser.console.log(_loaders);
         return _loaders.exists(id);
     }
 
