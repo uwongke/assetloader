@@ -2,15 +2,11 @@ package org.assetloader.base;
 
 import js.Browser;
 
-import com.poptropica.interfaces.IPlatform;
-import org.assetloader.signals.ErrorSignal;
-import org.assetloader.core.IAssetLoader;
+import org.assetloader.core.*;
 import org.assetloader.parsers.XmlConfigParser;
 import openfl.net.URLRequest;
-import org.assetloader.core.ILoader;
 import openfl.utils.Dictionary;
-import org.assetloader.signals.LoaderSignal;
-import org.assetloader.core.IConfigParser;
+import org.assetloader.signals.*;
 
 using Lambda;
 
@@ -18,12 +14,12 @@ class AssetLoaderBase extends AbstractLoader {
 
     /** configParser Property */
     private var configParser(get, never):IConfigParser;
-    private function get_configParser() : IConfigParser {
+    private function get_configParser():IConfigParser {
         if (_configParser != null) {
             return _configParser;
         }
 
-        _configParser = new XmlConfigParser(_platform);
+        _configParser = new XmlConfigParser();
         return _configParser;
     }
 
@@ -107,16 +103,13 @@ class AssetLoaderBase extends AbstractLoader {
 
     private var _configParser : IConfigParser;
 
-    private var _platform : IPlatform;
-
-    public function new(platform : IPlatform, id : String) {
+    public function new(id : String) {
         _loaders = new Dictionary(true);
         _data = _assets = new Dictionary(true);
-        _loaderFactory = new LoaderFactory(platform);
+        _loaderFactory = new LoaderFactory();
         _ids = [];
         _loadedIds = [];
         _failedIds = [];
-        _platform = platform;
         super(id, AssetType.GROUP);
     }
 
@@ -232,7 +225,7 @@ class AssetLoaderBase extends AbstractLoader {
         }
     }
 
-    private function removeListeners(loader : ILoader) : Void {
+    private function removeListeners(loader:ILoader):Void {
         if (loader != null) {
             loader.onError.remove(error_handler);
             loader.onOpen.remove(open_handler);
@@ -241,16 +234,17 @@ class AssetLoaderBase extends AbstractLoader {
         }
     }
 
-    private function hasCircularReference(id : String) : Bool {
-        /** AS3HX WARNING could not determine type for var: loader exp: EIdent(_loaders) type: Dictionary */
-        for (loader in _loaders) {
-            if (Std.is(loader, AssetLoaderBase)) {
-                var assetloader : AssetLoaderBase = cast((loader), AssetLoaderBase);
+    private function hasCircularReference(id:String):Bool {
+        _loaders.foreach((it->{
+            if (Std.is(it, AssetLoaderBase)) {
+                var assetloader : AssetLoaderBase = cast((it), AssetLoaderBase);
                 if (assetloader.hasLoader(id) || assetloader.hasCircularReference(id)) {
                     return true;
                 }
             }
-        }
+            return true;
+        }));
+
         return false;
     }
 
@@ -316,9 +310,9 @@ class AssetLoaderBase extends AbstractLoader {
         _onComplete.dispatch([this, data]);
     }
 
-    public function getLoader(id : String) : ILoader {
+    public function getLoader(id : String):ILoader {
         if (hasLoader(id)) {
-            return Reflect.field(_loaders, id);
+            return _loaders.get(id);
         }
         return null;
     }
@@ -339,8 +333,6 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function hasLoader(id : String) : Bool {
-        //Browser.console.log("==================================");
-        //Browser.console.log(_loaders);
         return _loaders.exists(id);
     }
 

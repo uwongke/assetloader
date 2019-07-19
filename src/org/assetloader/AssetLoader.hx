@@ -1,9 +1,10 @@
 package org.assetloader;
 
+import js.Browser;
 import openfl.errors.Error;
 import openfl.net.URLRequest;
 
-import com.poptropica.interfaces.IPlatform;
+//import com.poptropica.interfaces.IPlatform;
 
 import org.assetloader.base.*;
 import org.assetloader.parsers.URLParser;
@@ -16,8 +17,8 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
     private var _onChildError:ErrorSignal;
     private var _onChildComplete:LoaderSignal;
 
-    public function new(platform:IPlatform, id : String = "") {
-        super(platform, id);
+    public function new(id : String = "") {
+        super(id);
     }
 
     override function initSignals():Void {
@@ -161,9 +162,12 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
     }
 
     public function addConfig(config : String):Void {
-        var urlParser : URLParser = new URLParser(config);
+        var urlParser: URLParser = new URLParser(config);
+
+        //Browser.console.log(urlParser);
+
         if(urlParser.isValid) {
-            var loader : ILoader = _loaderFactory.produce("config", AssetType.TEXT, new URLRequest(config));
+            var loader:ILoader = _loaderFactory.produce("config", AssetType.TEXT, new URLRequest(config));
             loader.setParam(Param.PREVENT_CACHE, true);
 
             loader.onError.add(error_handler);
@@ -173,6 +177,7 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
         else {
             try {
                 configParser.parse(this, config);
+                //configParser.parseXml(Xml.parse(config));
             }
             catch(error : Error) {
                 throw new AssetLoaderError(AssetLoaderError.COULD_NOT_PARSE_CONFIG(_id, error.message), error.errorID);

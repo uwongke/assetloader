@@ -9,8 +9,10 @@ class ConfigVO {
 
     /** Mixed, but mostly for ILoaders */
     public var base : String = null;
-    public var id : String = "";
-    public var src : String = "";
+    //public var id : String = "";
+    //public var src : String = "";
+    public var id : String;
+    public var src : String;
     public var type : String = "AUTO";
     public var retries : Int = 3;
     public var weight : Int = 0;

@@ -1,8 +1,6 @@
 package test.org.assetloader.parsers;
 
 import js.Browser;
-import as3hx.Error;
-import org.assetloader.core.IConfigParser;
 import org.assetloader.AssetLoader;
 import org.assetloader.parsers.XmlConfigParser;
 import org.assetloader.core.IAssetLoader;
@@ -21,38 +19,34 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 		            <asset id=\"SAMPLE_XML\" src=\"sampleXML.xml\" />
 		            <asset id=\"SAMPLE_CSS\" src=\"sampleCSS.css\" />
 		        </group>
-		    <asset id=\"SAMPLE_BINARY\" src=\"sampleZIP.zip\" weight=\"3493\" />
-		    <asset id=\"SAMPLE_SOUND\" src=\"sampleSOUND.mp3\" weight=\"213 kb\" />
+		        <asset id=\"SAMPLE_BINARY\" src=\"sampleZIP.zip\" weight=\"3493\" />
+		        <asset id=\"SAMPLE_SOUND\" src=\"sampleSOUND.mp3\" weight=\"213 kb\" />
 		    </group>
-		        <assets preventCache=\"true\" >
-		            <asset id=\"SAMPLE_IMAGE\" src=\"sampleIMAGE.png\" weight=\"5 kb\" fillColor=\"0x0\" smoothing=\"true\" transparent=\"true\" />
-		            <asset id=\"SAMPLE_VIDEO\" src=\"sampleVIDEO.flv\" weight=\"0.312 mb\" onDemand=\"true\" />
-		            <asset id=\"SAMPLE_SWF\" src=\"sampleSWF.swf\" weight=\"526\" priority=\"1\" />
-		        </assets>
+		    <assets preventCache=\"true\" >
+		        <asset id=\"SAMPLE_IMAGE\" src=\"sampleIMAGE.png\" weight=\"5 kb\" fillColor=\"0x0\" smoothing=\"true\" transparent=\"true\" />
+		        <asset id=\"SAMPLE_VIDEO\" src=\"sampleVIDEO.flv\" weight=\"0.312 mb\" onDemand=\"true\" />
+		        <asset id=\"SAMPLE_SWF\" src=\"sampleSWF.swf\" weight=\"526\" priority=\"1\" />
+		    </assets>
 		    <asset id=\"SAMPLE_ERROR\" base=\"/\" src=\"fileThatDoesNotExist.php\" type=\"image\" retries=\"5\" />
 		</loader>";
 
     override public function setup() {
-        _parser = new XmlConfigParser(null);
+        _parser = new XmlConfigParser();
         _assetloader = new AssetLoader(null);
     }
 
     override public function tearDown() {}
 
-    //public function test_one():Void {
-    //    _parser.parse(_assetloader, _data);
-    //    assertTrue(true);
+
+    //public function test_implementing():Void {
+    //    trace("\nXmlConfigParser should implement IConfigParser");
+    //    assertTrue(Std.is(_parser, IConfigParser));
     //}
 
-    public function test_implementing():Void {
-        trace("\nXmlConfigParser should implement IConfigParser");
-        assertTrue(Std.is(_parser, IConfigParser));
-    }
-
-    public function test_isValid():Void {
-        trace("\nXmlConfigParser#isValid should be true with valid data");
-        assertTrue(_parser.isValid(_data));
-    }
+    //public function test_isValid():Void {
+        //trace("\nXmlConfigParser#isValid should be true with valid data");
+        //assertTrue(_parser.isValid(_data));
+    //}
 
     //public function test_isValidBrokenTagAdded():Void {
         //trace("\nXmlConfigParser#isValid should be false with a broken tag added");
@@ -73,10 +67,40 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 
     public function test_parseAndTestAllLoaders():Void {
         _parser.parse(_assetloader, _data);
-        _assetloader.hasLoader('SAMPLE_GROUP_01');
 
-        //trace("\nAssetLoader#hasLoader('SAMPLE_GROUP_01') should be true");
-        //assertTrue(_assetloader.hasLoader("SAMPLE_GROUP_01"));
+
+        Browser.window.setTimeout(()->{
+            trace("\nAssetLoader#hasLoader('SAMPLE_GROUP_01') should be true");
+            assertTrue(_assetloader.hasLoader("SAMPLE_GROUP_01"));
+
+            trace("\nAssetLoader#getLoader('SAMPLE_GROUP_01') should be an IAssetLoadere");
+            assertTrue(Std.is(_assetloader.getLoader("SAMPLE_GROUP_01"), IAssetLoader));
+
+            var group1:IAssetLoader = cast _assetloader.getLoader("SAMPLE_GROUP_01");
+            trace("\ngroup1#hasLoader('SAMPLE_GROUP_02') should be true");
+            assertTrue(group1.hasLoader("SAMPLE_GROUP_02"));
+
+            Browser.console.log(group1);
+
+            trace("\ngroup1#getLoader('SAMPLE_GROUP_02') should be an IAssetLoader");
+            assertTrue(Std.is(group1.getLoader("SAMPLE_GROUP_02"), IAssetLoader));
+            var group2:IAssetLoader = cast group1.getLoader("SAMPLE_GROUP_02");
+
+            Browser.console.log(group1.hasLoader('SAMPLE_TXT'));
+
+            //trace("\ngroup2#hasLoader('SAMPLE_TXT') should be true");
+
+            //assertTrue(group2.hasLoader('SAMPLE_TXT'));
+        }, 2000);
+
+
+
+//        trace("\ngroup2#hasLoader('SAMPLE_JSON') should be true");
+//        var json = group2.hasLoader('SAMPLE_JSON');
+        //assertTrue(group2.hasLoader('SAMPLE_JSON'));
+
+//        Browser.console.log(json);
+
 
 
         assertTrue(true);
@@ -85,111 +109,3 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
 
 
 }
-
-
-
-//    private var _data = "{
-//    \"loader\": {
-//        \"_attributes\": {
-//            \"connections\": \"3\",
-//            \"base\": \"test\"
-//        },
-//        \"group\": {
-//            \"_attributes\": {
-//                \"id\": \"SAMPLE_GROUP_01\",
-//                \"connections\": \"1\",
-//                \"preventCache\": \"false\"
-//            },
-//            \"group\": {
-//                \"_attributes\": {
-//                    \"id\": \"SAMPLE_GROUP_02\",
-//                    \"connections\": \"2\"
-//                },
-//                \"asset\": [
-//                    {
-//                        \"_attributes\": {
-//                            \"id\": \"SAMPLE_TXT\",
-//                            \"src\": \"sampleTXT.txt\"
-//                        }
-//                    },
-//                    {
-//                        \"_attributes\": {
-//                            \"id\": \"SAMPLE_JSON\",
-//                            \"src\": \"sampleJSON.json\"
-//                        }
-//                    },
-//                    {
-//                        \"_attributes\": {
-//                            \"id\": \"SAMPLE_XML\",
-//                            \"src\": \"sampleXML.xml\"
-//                        }
-//                    },
-//                    {
-//                        \"_attributes\": {
-//                            \"id\": \"SAMPLE_CSS\",
-//                            \"src\": \"sampleCSS.css\"
-//                        }
-//                    }
-//                ]
-//            },
-//            \"asset\": [
-//                {
-//                    \"_attributes\": {
-//                        \"id\": \"SAMPLE_BINARY\",
-//                        \"src\": \"sampleZIP.zip\",
-//                        \"weight\": \"3493\"
-//                    }
-//                },
-//                {
-//                    \"_attributes\": {
-//                        \"id\": \"SAMPLE_SOUND\",
-//                        \"src\": \"sampleSOUND.mp3\",
-//                        \"weight\": \"213 kb\"
-//                    }
-//                }
-//            ]
-//        },
-//        \"assets\": {
-//            \"_attributes\": {
-//                \"preventCache\": \"true\"
-//            },
-//            \"asset\": [
-//                {
-//                    \"_attributes\": {
-//                        \"id\": \"SAMPLE_IMAGE\",
-//                        \"src\": \"sampleIMAGE.png\",
-//                        \"weight\": \"5 kb\",
-//                        \"fillColor\": \"0x0\",
-//                        \"smoothing\": \"true\",
-//                        \"transparent\": \"true\"
-//                    }
-//                },
-//                {
-//                    \"_attributes\": {
-//                        \"id\": \"SAMPLE_VIDEO\",
-//                        \"src\": \"sampleVIDEO.flv\",
-//                        \"weight\": \"0.312 mb\",
-//                        \"onDemand\": \"true\"
-//                    }
-//                },
-//                {
-//                    \"_attributes\": {
-//                        \"id\": \"SAMPLE_SWF\",
-//                        \"src\": \"sampleSWF.swf\",
-//                        \"weight\": \"526\",
-//                        \"priority\": \"1\"
-//                    }
-//                }
-//            ]
-//        },
-//        \"asset\": {
-//            \"_attributes\": {
-//                \"id\": \"SAMPLE_ERROR\",
-//                \"base\": \"/\",
-//                \"src\": \"fileThatDoesNotExist.php\",
-//                \"type\": \"image\",
-//                \"retries\": \"5\"
-//            }
-//        }
-//    }
-//}";
