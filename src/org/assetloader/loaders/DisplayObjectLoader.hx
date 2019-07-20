@@ -25,7 +25,7 @@ class DisplayObjectLoader extends BaseLoader {
 
     override private function initSignals() : Void {
         super.initSignals();
-        _onComplete = new LoaderSignal(DisplayObject);
+        _onComplete = new LoaderSignal([DisplayObject]);
     }
 
     override private function constructLoader() : IEventDispatcher {
@@ -60,7 +60,7 @@ class DisplayObjectLoader extends BaseLoader {
         var testResult : String = testData(_data);
 
         if (testResult != "") {
-            _onError.dispatch(this, ErrorEvent.ERROR, testResult);
+            _onError.dispatch([this, ErrorEvent.ERROR, testResult]);
             return;
         }
 

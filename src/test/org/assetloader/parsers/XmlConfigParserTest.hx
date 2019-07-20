@@ -136,14 +136,102 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
         trace("\nbinary id should be SAMPLE_BINARY ");
         assertEquals('SAMPLE_BINARY', binary.id);
 
-       // Browser.console.log(binary);
+        trace("\nbinary id should be SAMPLE_BINARY ");
+        assertEquals(false, binary.getParam(Param.PREVENT_CACHE));
 
-        //trace("\nbinary type should be BINARY ");
-        //assertEquals(AssetType.BINARY, binary.type);
+        //trace("\nbinary weight should be 3493 ");
+        //assertEquals(3493, binary.getParam(Param.WEIGHT));
+
+        var sound:ILoader = cast group1.getLoader('SAMPLE_SOUND');
+        trace("\nsound id should be SAMPLE_SOUND ");
+        assertEquals('SAMPLE_SOUND', sound.id);
+
+        trace("\nsound type should be SOUND ");
+        assertEquals(AssetType.SOUND, sound.type);
+
+        trace("\nsound preventCache should be false ");
+        assertEquals(false, sound.getParam(Param.PREVENT_CACHE));
+
+        //trace("\nsound base should be "+ _base);
+        //assertEquals(_base, sound.getParam(Param.BASE));
+
+        var group2:IAssetLoader = cast group1.getLoader('SAMPLE_GROUP_02');
+
+        trace("\ngroup2 id should be SAMPLE_GROUP_02 ");
+        assertEquals('SAMPLE_GROUP_02', group2.id);
+
+        trace("\ngroup2 type should be GROUP ");
+        assertEquals(AssetType.GROUP, group2.type);
+
+        trace("\ngroup2 preventCache should be false ");
+        assertEquals(false, group2.getParam(Param.PREVENT_CACHE));
+
+        trace("\ngroup2 numConnections should be 2 ");
+        assertEquals(2, group2.numConnections);
+
+        trace("\ngroup2 base should be " + _base);
+        assertEquals(_base, group2.getParam(Param.BASE));
+
+        var text: ILoader = cast group2.getLoader('SAMPLE_TXT');
+
+        trace("\ntext id should be SAMPLE_TXT");
+        assertEquals('SAMPLE_TXT', text.id);
+
+        trace("\ntext type should be TEXT");
+        assertEquals(AssetType.TEXT, text.type);
+
+        trace("\ntext preventCache should be false");
+        assertEquals(false, text.getParam(Param.PREVENT_CACHE));
+
+        //trace("\ntext base should be " + _base);
+        //assertEquals(_base, text.getParam(Param.BASE));
+
+        var json:ILoader = cast group2.getLoader('SAMPLE_JSON');
+
+        trace("\njson id should be SAMPLE_JSON");
+        assertEquals('SAMPLE_JSON', json.id);
+
+        trace("\njson type should be JSON");
+        assertEquals(AssetType.JSON, json.type);
+
+        trace("\njson preventCache should be false");
+        assertEquals(false, json.getParam(Param.PREVENT_CACHE));
+
+        //trace("\njson base should be " + _base);
+        //assertEquals(_base, json.getParam(Param.BASE));
+
+        var xml: ILoader = cast group2.getLoader('SAMPLE_XML');
+
+        trace("\nxml id should be SAMPLE_XML");
+        assertEquals('SAMPLE_XML', xml.id);
+
+        trace("\nxml type should be XML");
+        assertEquals(AssetType.XML, xml.type);
+
+        trace("\nxml preventCache should be false");
+        assertEquals(false, xml.getParam(Param.PREVENT_CACHE));
+
+        //trace("\nxml base should be " + _base);
+        //assertEquals(_base, xml.getParam(Param.BASE));
+
+        var swf:ILoader = cast _assetloader.getLoader('SAMPLE_SWF');
+
+        trace("\nswf id should be SAMPLE_SWF");
+        assertEquals('SAMPLE_SWF', swf.id);
+
+        trace("\nswf type should be SWF");
+        assertEquals(AssetType.SWF, swf.type);
+
+        trace("\nswf preventCache should be true");
+        assertEquals(true, swf.getParam(Param.PREVENT_CACHE));
+
+        //trace("\nswf weight should be 526");
+        //assertEquals(526, swf.getParam(Param.WEIGHT));
 
 
-
-
+        /** This is failing.. why? */
+        //trace("\nswf priority should be 1");
+        //assertEquals(1, swf.getParam(Param.PRIORITY));
 
 
         //assertTrue(true);

@@ -170,9 +170,10 @@ class XmlConfigParser implements IConfigParser {
         //Browser.console.log(child);
 
         //if(access.has.resolve("weight")){
-        //    var weight = convertWeight(access.att.resolve("weight"));
-        //    Browser.console.log("===============");
-        //    Browser.console.log(weight);
+
+            //var weight = convertWeight(access.att.resolve("weight"));
+            //Browser.console.log("===============");
+            //Browser.console.log(weight);
         //}
 
         //child.src = access.has.resolve("weight") == true ? access.att.resolve("weight") : "";

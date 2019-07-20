@@ -4,6 +4,9 @@ package org.assetloader.base;
 
 /** Hosted in this Library for now.  TODO@WOlfie -> Discuss with @Michael */
 
+import org.assetloader.loaders.SWFLoader;
+import org.assetloader.loaders.JSONLoader;
+import org.assetloader.loaders.SoundLoader;
 import org.assetloader.loaders.TextLoader;
 import org.assetloader.core.*;
 import org.assetloader.loaders.XMLLoader;
@@ -49,7 +52,6 @@ class LoaderFactory {
             if (urlParser.isValid) {
                 if (type == AssetType.AUTO) {
                     type = getTypeFromExtension(urlParser.fileExtension);
-                    Browser.console.log(type);
                 }
             }
             else {
@@ -131,6 +133,14 @@ class LoaderFactory {
                 _loader = new AssetLoader(id);
             case AssetType.TEXT:
                 _loader = new TextLoader(request, id);
+            case AssetType.SOUND:
+                _loader = new SoundLoader(request, id);
+            case AssetType.JSON:
+                _loader = new JSONLoader(request, id);
+            case AssetType.SWF:
+                _loader = new SWFLoader(request, id);
+
+
 
             default:
                 _loader = new XMLLoader(request, id);

@@ -4,7 +4,6 @@ import openfl.errors.Error;
 import openfl.display.DisplayObject;
 import openfl.events.IEventDispatcher;
 import openfl.events.Event;
-import openfl.system.ApplicationDomain;
 import org.assetloader.base.Param;
 import openfl.system.LoaderContext;
 import openfl.system.SecurityDomain;
@@ -14,9 +13,8 @@ import org.assetloader.signals.LoaderSignal;
 import openfl.display.Sprite;
 
 class SWFLoader extends DisplayObjectLoader {
-    public var swf(get, never) : Sprite;
-    public var onInit(get, never) : LoaderSignal;
-
+    public var swf(get, never):Sprite;
+    public var onInit(get, never):LoaderSignal;
 
     private var _swf : Sprite;
 
@@ -37,13 +35,13 @@ class SWFLoader extends DisplayObjectLoader {
     override private function initSignals() : Void {
         super.initSignals();
         _onInit = new LoaderSignal();
-        _onComplete = new LoaderSignal(Sprite);
+        _onComplete = new LoaderSignal([Sprite]);
     }
 
     private function init_handler(event : Event) : Void {
         _data = _displayObject = _loader.content;
 
-        _onInit.dispatch(this, _data);
+        _onInit.dispatch([this, _data]);
     }
 
     override private function addListeners(dispatcher : IEventDispatcher) : Void {
@@ -60,7 +58,7 @@ class SWFLoader extends DisplayObjectLoader {
         }
     }
 
-    override public function destroy() : Void {
+    override public function destroy():Void {
         super.destroy();
         _swf = null;
     }

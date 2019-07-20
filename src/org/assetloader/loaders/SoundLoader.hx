@@ -12,7 +12,6 @@ import openfl.utils.Timer;
 import openfl.media.Sound;
 import org.assetloader.signals.LoaderSignal;
 
-
 class SoundLoader extends BaseLoader {
     public var onReady(get, never): LoaderSignal;
     public var onId3(get, never): LoaderSignal;
@@ -33,8 +32,8 @@ class SoundLoader extends BaseLoader {
 
     override private function initSignals() : Void {
         super.initSignals();
-        _onComplete = new LoaderSignal(Sound);
-        _onReady = new LoaderSignal(Sound);
+        _onComplete = new LoaderSignal([Sound]);
+        _onReady = new LoaderSignal([Sound]);
         _onId3 = new LoaderSignal();
     }
 
@@ -56,7 +55,7 @@ class SoundLoader extends BaseLoader {
         try {
             _sound.load(request, getParam(Param.SOUND_LOADER_CONTEXT));
         } catch (error : SecurityError) {
-            _onError.dispatch(this, error.name, error.message);
+            _onError.dispatch([this, error.name, error.message]);
         }
         _readyTimer.start();
     }
@@ -101,7 +100,7 @@ class SoundLoader extends BaseLoader {
     override private function complete_handler(event : Event) : Void {
         if (!_isReady) {
             _isReady = true;
-            _onReady.dispatch(this, _sound);
+            _onReady.dispatch([this, _sound]);
             _readyTimer.stop();
         }
         super.complete_handler(event);
@@ -109,14 +108,14 @@ class SoundLoader extends BaseLoader {
 
     private function readyTimer_handler(event : TimerEvent) : Void {
         if (!_isReady && !_sound.isBuffering) {
-            _onReady.dispatch(this, _sound);
+            _onReady.dispatch([this, _sound]);
             _isReady = true;
             _readyTimer.stop();
         }
     }
 
     private function id3_handler(event : Event) : Void {
-        _onId3.dispatch(this);
+        _onId3.dispatch([this]);
     }
 
     /** Dispatches when the Sound instance is ready to be played e.g. streamed while still loading.

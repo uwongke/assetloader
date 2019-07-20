@@ -150,15 +150,12 @@ class URLParser {
             for (i in 0..._parts.length) {
                 if(_parts[i] != ""){
                     if(urlExp.matched(i) !=null){
-                        //Browser.console.log("-------------------");
-                        //Browser.console.log(_parts[i]);
-                        //Browser.console.log(urlExp.matched(i));
                         Reflect.setField(this, "_"+_parts[i],  urlExp.matched(i));
                     }
                 }
             }
 
-            Browser.console.log(path);
+            //Browser.console.log(path);
 
             /** Handle urlVariables */
             if(_urlVariables != null){
@@ -176,8 +173,6 @@ class URLParser {
             /** duplicate '/' */
             _path = StringTools.replace(_path, "//", "/");
 
-
-
             /** fileName */
             if(_fileName == ""){
                 if(_path == ""){
@@ -187,15 +182,9 @@ class URLParser {
                 }
             }
 
-
-
-
-
             /** fileExtension */
             if(_fileName.lastIndexOf(".") != -1){
-                //Browser.console.log(_fileName);
                 _fileExtension = _fileName.substr(_fileName.lastIndexOf(".") + 1);
-                //Browser.console.log(_fileExtension);
             }
         }
     }
