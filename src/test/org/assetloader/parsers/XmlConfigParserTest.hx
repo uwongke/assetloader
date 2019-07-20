@@ -80,17 +80,14 @@ class XmlConfigParserTest extends haxe.unit.TestCase {
             trace("\ngroup1#hasLoader('SAMPLE_GROUP_02') should be true");
             assertTrue(group1.hasLoader("SAMPLE_GROUP_02"));
 
-            Browser.console.log(group1);
-
             trace("\ngroup1#getLoader('SAMPLE_GROUP_02') should be an IAssetLoader");
             assertTrue(Std.is(group1.getLoader("SAMPLE_GROUP_02"), IAssetLoader));
+
             var group2:IAssetLoader = cast group1.getLoader("SAMPLE_GROUP_02");
 
-            Browser.console.log(group1.hasLoader('SAMPLE_TXT'));
+            assertTrue("group2#hasLoader('SAMPLE_TXT') should be true", group2.hasLoader('SAMPLE_TXT'));
 
-            //trace("\ngroup2#hasLoader('SAMPLE_TXT') should be true");
 
-            //assertTrue(group2.hasLoader('SAMPLE_TXT'));
         }, 2000);
 
 

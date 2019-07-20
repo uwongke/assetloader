@@ -55,110 +55,76 @@ class XmlConfigParser implements IConfigParser {
         _assetloader = assetloader;
         _loaderFactory = new LoaderFactory();
         parseXml(Xml.parse(data));
-        //_assetloader = null;
-        //_loaderFactory = null;
     }
 
-    private function filterChildren(children:Array<Xml>): Array<Xml> {
-        var filtered: Array<Xml> = new Array<Xml>();
-        children.foreach((it: Xml)->{
-            var innerChildren: Array<Xml> = Reflect.field(it, "children");
-            if(children.length !=0){ filtered.push(it); }
+    private function handleGroupAsset(node: Xml, vo:ConfigVO, group: IAssetLoader): Void {
+        group.addLoader(parseAsset(parseVo(node, vo)));
+    }
+
+    private function handleNestedGroup(node: Xml, vo:ConfigVO, parentGroup: IAssetLoader): Void {
+        var group:IAssetLoader = parseGroup(vo);
+        parentGroup.addLoader(group);
+        group.addConfig(vo.xml.toString());
+
+        /** Process Asset */
+        var nested: Array<Xml> = Reflect.field(node, "children");
+        nested.foreach((it: Xml)->{
+            switch(Reflect.field(it, "nodeName")){
+                case "asset": handleGroupAsset(it, vo, group);
+                case "group": handleNestedGroup(it, parseVo(it, vo), group);
+            }
             return true;
         });
-        return filtered;
     }
 
-    private function recurseNodes(node: Xml, vo:ConfigVO):Void {
-        var children:Array<Xml> = Reflect.field(node, "children");
-        var filtered:Array<Xml> = filterChildren(children);
+    private function handleGroup(node:Xml, vo:ConfigVO): Void {
+        /** Process Group */
+        var group:IAssetLoader = parseGroup(vo);
+        _assetloader.addLoader(group);
+        group.addConfig(vo.xml.toString());
 
-        switch(Reflect.field(node, "nodeName")){
-            case "group": {
-                var group : IAssetLoader = parseGroup(vo);
-                //Browser.console.log(group);
-                assetloader.addLoader(group);
-                group.addConfig(vo.xml.toString());
-            }
-            case "asset": {
-                var asset = parseAsset(vo);
-                //Browser.console.log(asset);
-                assetloader.addLoader(asset);
-                //Browser.console.log(_assetloader);
-                //parse(cast asset, vo);
-                //var test = Reflect.field(node, "nodeName");
-                //Browser.console.log(asset);
-                //if() !=null){
-                //parseXml(node.firstElement(), vo);
-                //}
-            }
-            default: {
-                //Browser.console.log(node);
-                parseXml(node, vo);
-            }
-        }
-
-        filtered.foreach((it: Xml)->{
-            if(Reflect.field(it, "nodeName") !=null){
-                var voo:ConfigVO = parseVo(it, vo);
-                recurseNodes(it, voo);
+        /** Process Asset */
+        var nested: Array<Xml> = Reflect.field(node, "children");
+        nested.foreach((it: Xml)->{
+            switch(Reflect.field(it, "nodeName")){
+                case "asset": handleGroupAsset(it, vo, group);
+                case "group": handleNestedGroup(it, parseVo(it, vo), group);
             }
             return true;
         });
     }
 
     public function parseXml(xml: Xml, inheritFrom: ConfigVO = null):Void {
-        var rootVo:ConfigVO = parseVo(xml.firstElement(), inheritFrom);
+        var children: Array<Xml> = new Array<Xml>();
 
-        var children:Array<Xml> = Reflect.field(xml.firstElement(), "children");
-        var topLevel:Array<Xml> = new Array<Xml>();
-
-        children.foreach((it: Xml)->{
+        xml.firstElement().foreach((it)->{
             var innerChildren: Array<Xml> = Reflect.field(it, "children");
             if(innerChildren.length !=0){
-                topLevel.push(it);
+                children.push(it);
             }
             return true;
         });
 
-        topLevel.foreach((it: Xml)->{
+        var rootVo:ConfigVO = parseVo(xml.firstElement(), inheritFrom);
+
+        children.foreach((it: Xml)->{
             var vo:ConfigVO = parseVo(it, rootVo);
-            recurseNodes(it, vo);
+            if(Reflect.field(it, "nodeName") == "group"){
+                handleGroup(it, vo);
+            }
+
             return true;
         });
+    }
 
+    private function parseGroup(vo : ConfigVO) : IAssetLoader {
+        var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
+        loader.numConnections = vo.connections;
+        return loader;
+    }
 
-
-        /** Intentional shadowing... */
-//        children  = Reflect.field(xml, "children");
-//        children.foreach((it: Xml)->{
-//            //Browser.console.log(it);
-//
-//            var vo:ConfigVO = parseVo(it.firstElement(), rootVo);
-//
-//
-//            if(vo.id != "" && vo.src == "") {
-//                //Browser.console.log("=====GROUP=====");
-//                //Browser.console.log(vo);
-//                //var group : IAssetLoader = parseGroup(vo);
-//                //_assetloader.addLoader(group);
-//                //group.addConfig(vo.xml.toString());
-//            }
-//            else if(vo.id != "" && vo.src != ""){
-//                //Browser.console.log("=====ASSET=====");
-//                //Browser.console.log(vo);
-//                //_assetloader.addLoader(parseAsset(vo));
-//            }
-//            else {
-//                //Browser.console.log("=====OTHER=====");
-//                //Browser.console.log(it);
-//                //Browser.console.log(vo);
-//                //parseXml(it, vo);
-//            }
-//
-//            return true;
-//        });
-
+    private function parseAsset(vo : ConfigVO) : ILoader {
+        return _loaderFactory.produce(vo.id, vo.type, new URLRequest(vo.src), getParams(vo));
     }
 
     private function parseVo(xml:Xml, inheritFrom:ConfigVO = null):ConfigVO {
@@ -186,6 +152,7 @@ class XmlConfigParser implements IConfigParser {
         child.type = child.type.toUpperCase();
         child.xml = xml;
 
+
         //Browser.console.log("=====parseVo=====");
         //Browser.console.log(child);
 
@@ -198,19 +165,6 @@ class XmlConfigParser implements IConfigParser {
         //child.src = access.has.resolve("weight") == true ? access.att.resolve("weight") : "";
         return child;
     }
-
-
-
-    private function parseGroup(vo : ConfigVO) : IAssetLoader {
-        var loader : IAssetLoader = cast((_loaderFactory.produce(vo.id, AssetType.GROUP, null, getParams(vo))), IAssetLoader);
-        loader.numConnections = vo.connections;
-        return loader;
-    }
-
-    private function parseAsset(vo : ConfigVO) : ILoader {
-        return _loaderFactory.produce(vo.id, vo.type, new URLRequest(vo.src), getParams(vo));
-    }
-
 
 //    private function parseVo(data: Xml, inheritFrom : ConfigVO = null) : ConfigVO {
 //        inheritFrom = inheritFrom == null ? new ConfigVO() : inheritFrom;
@@ -266,7 +220,7 @@ class XmlConfigParser implements IConfigParser {
     //TODO@Wolfie -> re-introduce weight conversions
 
     private function convertWeight(str : String) : Int {
-        if (str == null) {
+        if(str == null) {
             return 0;
         }
 
@@ -304,7 +258,6 @@ class XmlConfigParser implements IConfigParser {
         return false;
     }
 }
-
 
 //    private function parseXml(data: Xml, inheritFrom : ConfigVO = null) : Void {
 //        var rootVo:ConfigVO = parseVo(data.firstElement(), inheritFrom);
@@ -392,3 +345,139 @@ class XmlConfigParser implements IConfigParser {
 ////            return true;
 ////        });
 //    }
+
+//private function recurseNodes(node: Xml, vo:ConfigVO):Void {
+//        var children:Array<Xml> = Reflect.field(node, "children");
+//        var filtered:Array<Xml> = new Array<Xml>();
+//
+//        /** Filter out empty nodes */
+//        children.foreach((it: Xml)->{
+//            var innerChildren: Array<Xml> = Reflect.field(it, "children");
+//            if(children.length !=0){ filtered.push(it); }
+//            return true;
+//        });
+//
+//        var test = Reflect.field(node, "nodeName");
+//
+//        Browser.console.log(test);
+//
+//        switch(Reflect.field(node, "nodeName")){
+//            case "group": {
+//                //var group : IAssetLoader = parseGroup(vo);
+//                //assetloader.addLoader(group);
+//                //group.addConfig(vo.xml.toString());
+//                //parseXml(node, vo);
+//                Browser.console.log("group");
+//                Browser.console.log(node);
+//            }
+//            case "asset": {
+//                //var asset = parseAsset(vo);
+//                //assetloader.addLoader(asset);
+//
+//                Browser.console.log("asset");
+//                Browser.console.log(node);
+//            }
+//            default:
+//                //parseXml(node, vo);
+//                //Browser.console.log("default");
+//                //Browser.console.log(node);
+//        }
+//
+//        //filtered.foreach((it: Xml)->{
+//        //    if(Reflect.field(it, "nodeName") !=null){
+//        //        var voo:ConfigVO = parseVo(it, vo);
+//                //recurseNodes(it, voo);
+//        //    }
+//        //    return true;
+//        //});
+//
+//
+////        switch(Reflect.field(node, "nodeName")){
+////            case "group": {
+////                var group : IAssetLoader = parseGroup(vo);
+////                //Browser.console.log(group);
+////                assetloader.addLoader(group);
+////                group.addConfig(vo.xml.toString());
+////                var groupChildren: Array<Xml> = Reflect.field(node, "children");
+////                groupChildren.foreach((it: Xml)->{
+////                    if(Reflect.field(it, "nodeName") !=null){
+////                        var voo:ConfigVO = parseVo(it, vo);
+////                        recurseNodes(it, voo);
+////                    };
+////                    return true;
+////                });
+////                //Browser.console.log(groupChildren);
+////            }
+////            case "asset": {
+////                var asset = parseAsset(vo);
+////                //Browser.console.log(asset);
+////                assetloader.addLoader(asset);
+////            }
+////            default: {
+////                //Browser.console.log(node);
+////                //parseXml(node, vo);
+////            }
+////        }
+//
+//        //filtered.foreach((it: Xml)->{
+//        //    if(Reflect.field(it, "nodeName") !=null){
+//        //        var voo:ConfigVO = parseVo(it, vo);
+//        //        recurseNodes(it, voo);
+//        //    }
+//        //    return true;
+//        //});
+//    }
+
+//var rootVo:ConfigVO = parseVo(xml.firstElement(), inheritFrom);
+
+//var children:Array<Xml> = Reflect.field(xml.firstElement(), "children");
+//var topLevel:Array<Xml> = new Array<Xml>();
+
+//children.foreach((it: Xml)->{
+//    var innerChildren: Array<Xml> = Reflect.field(it, "children");
+//    if(innerChildren.length !=0){
+//        topLevel.push(it);
+//    }
+//    return true;
+//});
+
+//topLevel.foreach((it: Xml)->{
+//    var vo:ConfigVO = parseVo(it, rootVo);
+//    recurseNodes(it, vo);
+//    return true;
+//});
+
+//var filtered = filterChildren(children);
+//Browser.console.log(children);
+
+
+
+/** Intentional shadowing... */
+//        children  = Reflect.field(xml, "children");
+//        children.foreach((it: Xml)->{
+//            //Browser.console.log(it);
+//
+//            var vo:ConfigVO = parseVo(it.firstElement(), rootVo);
+//
+//
+//            if(vo.id != "" && vo.src == "") {
+//                //Browser.console.log("=====GROUP=====");
+//                //Browser.console.log(vo);
+//                //var group : IAssetLoader = parseGroup(vo);
+//                //_assetloader.addLoader(group);
+//                //group.addConfig(vo.xml.toString());
+//            }
+//            else if(vo.id != "" && vo.src != ""){
+//                //Browser.console.log("=====ASSET=====");
+//                //Browser.console.log(vo);
+//                //_assetloader.addLoader(parseAsset(vo));
+//            }
+//            else {
+//                //Browser.console.log("=====OTHER=====");
+//                //Browser.console.log(it);
+//                //Browser.console.log(vo);
+//                //parseXml(it, vo);
+//            }
+//
+//            return true;
+//        });

@@ -4,8 +4,6 @@ import js.Browser;
 import openfl.errors.Error;
 import openfl.net.URLRequest;
 
-//import com.poptropica.interfaces.IPlatform;
-
 import org.assetloader.base.*;
 import org.assetloader.parsers.URLParser;
 import org.assetloader.core.*;
@@ -176,8 +174,7 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
         }
         else {
             try {
-                configParser.parse(this, config);
-                //configParser.parseXml(Xml.parse(config));
+                //configParser.parse(this, config);
             }
             catch(error : Error) {
                 throw new AssetLoaderError(AssetLoaderError.COULD_NOT_PARSE_CONFIG(_id, error.message), error.errorID);

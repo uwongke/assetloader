@@ -9,8 +9,6 @@ class ConfigVO {
 
     /** Mixed, but mostly for ILoaders */
     public var base : String = null;
-    //public var id : String = "";
-    //public var src : String = "";
     public var id : String;
     public var src : String;
     public var type : String = "AUTO";
@@ -26,6 +24,7 @@ class ConfigVO {
     public var blendMode : String = null;
     public var smoothing : Bool = false;
     public var pixelSnapping : String = "auto";
+
 
 
     public function new() {}
