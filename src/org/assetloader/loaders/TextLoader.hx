@@ -20,8 +20,8 @@ class TextLoader extends BaseLoader {
     }
 
     override private function initSignals() : Void {
-        //super.initSignals();
-        //_onComplete = new LoaderSignal(String);
+        super.initSignals();
+        _onComplete = new LoaderSignal([String]);
     }
 
     override private function constructLoader() : IEventDispatcher {

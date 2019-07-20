@@ -311,16 +311,7 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function getLoader(id : String):ILoader {
-
         if (hasLoader(id)) {
-            var l = Reflect.field(_loaders, id);
-
-            //Browser.console.log(_loaders);
-            //var test = _loaders.get(id);
-            //Browser.console.log(test);
-            //Browser.console.log(id);
-            //Browser.console.log(_loaders);
-            //Browser.console.log("==============================");
             return _loaders.get(id);
         }
         return null;

@@ -25,7 +25,5 @@ class ConfigVO {
     public var smoothing : Bool = false;
     public var pixelSnapping : String = "auto";
 
-
-
     public function new() {}
 }

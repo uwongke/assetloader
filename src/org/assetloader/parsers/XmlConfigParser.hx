@@ -61,6 +61,17 @@ class XmlConfigParser implements IConfigParser {
         group.addLoader(parseAsset(parseVo(node, vo)));
     }
 
+    private function handleAssets(node: Xml, vo:ConfigVO, loader: IAssetLoader): Void {
+        var assets: Array<Xml> = Reflect.field(node, "children");
+        assets.foreach((it: Xml)->{
+            var nodeName = Reflect.field(it, "nodeName");
+            if(nodeName !=null && nodeName == "asset"){
+                loader.addLoader(parseAsset(parseVo(it, vo)));
+            }
+            return true;
+        });
+    }
+
     private function handleNestedGroup(node: Xml, vo:ConfigVO, parentGroup: IAssetLoader): Void {
         var group:IAssetLoader = parseGroup(vo);
         parentGroup.addLoader(group);
@@ -109,8 +120,9 @@ class XmlConfigParser implements IConfigParser {
 
         children.foreach((it: Xml)->{
             var vo:ConfigVO = parseVo(it, rootVo);
-            if(Reflect.field(it, "nodeName") == "group"){
-                handleGroup(it, vo);
+            switch(Reflect.field(it, "nodeName")){
+                case "group": handleGroup(it, vo);
+                case "assets": handleAssets(it, vo, _assetloader);
             }
 
             return true;
@@ -124,6 +136,7 @@ class XmlConfigParser implements IConfigParser {
     }
 
     private function parseAsset(vo : ConfigVO) : ILoader {
+        //Browser.console.log(vo.src);
         return _loaderFactory.produce(vo.id, vo.type, new URLRequest(vo.src), getParams(vo));
     }
 

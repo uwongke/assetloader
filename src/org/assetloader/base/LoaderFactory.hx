@@ -4,6 +4,7 @@ package org.assetloader.base;
 
 /** Hosted in this Library for now.  TODO@WOlfie -> Discuss with @Michael */
 
+import org.assetloader.loaders.TextLoader;
 import org.assetloader.core.*;
 import org.assetloader.loaders.XMLLoader;
 import org.assetloader.parsers.URLParser;
@@ -37,16 +38,18 @@ class LoaderFactory {
             default: params;
         }
 
-        //Browser.console.log("=====GENERAL=====");
-        //Browser.console.log(id);
-        //Browser.console.log(type);
-        //Browser.console.log(params);
+//        Browser.console.log("============================");
+//        Browser.console.log(type);
+//        Browser.console.log(id);
+//        Browser.console.log(vo.src);
 
         if (request != null) {
             var urlParser : URLParser = new URLParser(request.url);
+
             if (urlParser.isValid) {
                 if (type == AssetType.AUTO) {
                     type = getTypeFromExtension(urlParser.fileExtension);
+                    Browser.console.log(type);
                 }
             }
             else {
@@ -60,9 +63,7 @@ class LoaderFactory {
 
         constructLoader(type, id, request);
 
-        if (params != null) {
-            processParams(params);
-        }
+        if (params != null) { processParams(params); }
 
         return loader;
     }
@@ -128,6 +129,9 @@ class LoaderFactory {
                 loader = new XMLLoader(request, id);
             case AssetType.GROUP:
                 _loader = new AssetLoader(id);
+            case AssetType.TEXT:
+                _loader = new TextLoader(request, id);
+
             default:
                 _loader = new XMLLoader(request, id);
 
