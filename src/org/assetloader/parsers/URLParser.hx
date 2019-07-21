@@ -165,7 +165,7 @@ class URLParser {
             /** Corner cases */
 
             if(_host.indexOf(".") == -1){
-                _isValid = false;
+                //_isValid = false;
                 _path = "/"+_host+path;
                 _host = null;
             }

@@ -140,8 +140,6 @@ class LoaderFactory {
             case AssetType.SWF:
                 _loader = new SWFLoader(request, id);
 
-
-
             default:
                 _loader = new XMLLoader(request, id);
 

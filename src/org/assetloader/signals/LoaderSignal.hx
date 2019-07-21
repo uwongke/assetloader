@@ -6,20 +6,17 @@ import org.osflash.signals.Signal;
 
 class LoaderSignal extends Signal {
 
-    private var _loader : ILoader;
-    public var loader(get, never) : ILoader;
+    private var _loader:ILoader;
+    public var loader(get, never):ILoader;
 
-    private var _signalType : Class<Dynamic>;
+    private var _signalType:Class<Dynamic>;
 
-    public function new(valueClasses : Array<Dynamic> = null) {
+    public function new(valueClasses:Array<Dynamic> = null) {
         super();
         valueClasses = switch(valueClasses) {
             case null: new Array<Dynamic>();
             default: valueClasses;
         }
-
-        //Browser.console.log("------------------");
-        //Browser.console.log(valueClasses);
 
         _signalType = (_signalType != null) ? _signalType : LoaderSignal;
 
@@ -27,14 +24,20 @@ class LoaderSignal extends Signal {
             valueClasses = valueClasses[0];
         }
 
+        this.valueClasses = [_signalType, null, valueClasses];
+
         //this.valueClasses = [_signalType].concat.apply(null, valueClasses);
     }
 
     /** First argument must be the loader to which this signal belongs. */
-    override public function dispatch(args : Array<Dynamic> = null) : Void {
+    override public function dispatch(args:Array<Dynamic> = null) : Void {
+
         _loader = args.shift();
 
-        //super.dispatch.apply(null, [this].concat.apply(null, args));
+        var newArgs = [this];
+        for(a in args){ newArgs.push(a); }
+
+        super.dispatch(newArgs);
     }
 
     /** Gets the loader that dispatched this signal. */

@@ -248,11 +248,14 @@ class AssetLoaderBase extends AbstractLoader {
         return false;
     }
 
-    override private function addedToParent_handler(signal : LoaderSignal, parent : IAssetLoader) : Void {
+    override private function addedToParent_handler(signal: LoaderSignal, parent : IAssetLoader) : Void {
         if (hasCircularReference(_id)) {
             throw new AssetLoaderError(AssetLoaderError.CIRCULAR_REFERENCE_FOUND(_id));
         }
 
+        //Browser.console.log("=====================================");
+        //Browser.console.log(signal);
+        //Browser.console.log(parent);
         super.addedToParent_handler(signal, parent);
     }
 

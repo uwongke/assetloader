@@ -1,5 +1,6 @@
 package org.assetloader.base;
 
+import js.Browser;
 import org.assetloader.core.IAssetLoader;
 import org.assetloader.signals.HttpStatusSignal;
 import org.assetloader.signals.ProgressSignal;
@@ -146,17 +147,17 @@ class AbstractLoader implements ILoader {
         return _onStop;
     }
 
-    public var callback : Function;
+    public var callback:Function;
 
-    public var callbackArgs : Array<Dynamic>;
+    public var callbackArgs:Array<Dynamic>;
 
-    public var fallbackPrefix : String;
+    public var fallbackPrefix:String;
 
-    public var cache : Bool;
+    public var cache:Bool;
 
-    private var _onError : ErrorSignal;
+    private var _onError:ErrorSignal;
 
-    private var _onHttpStatus : HttpStatusSignal;
+    private var _onHttpStatus:HttpStatusSignal;
 
     private var _onOpen : LoaderSignal;
 
@@ -258,12 +259,12 @@ class AbstractLoader implements ILoader {
         _loaded = false;
     }
 
-    private function addedToParent_handler(signal : LoaderSignal, parent : IAssetLoader):Void {
+    private function addedToParent_handler(signal: LoaderSignal, parent : IAssetLoader):Void {
         if (_parent != null) {
             throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINED_BY_OTHER(_id, _parent.id));
         }
 
-        _parent = parent;
+        _parent = cast parent;
 
         /** Inherit prevent cache from parent if undefined */
         if (Reflect.field(_params, Std.string(Param.PREVENT_CACHE)) == null) {

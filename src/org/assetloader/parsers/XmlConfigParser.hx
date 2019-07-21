@@ -9,12 +9,10 @@ import org.assetloader.base.Param;
 import org.assetloader.base.AssetType;
 import js.Browser;
 
-
 import org.assetloader.core.IAssetLoader;
 import org.assetloader.core.IConfigParser;
 
 using Lambda;
-
 
 class XmlConfigParser implements IConfigParser {
 
@@ -29,11 +27,8 @@ class XmlConfigParser implements IConfigParser {
     }
 
     private var _loaderFactory : LoaderFactory;
-    //private var _platform : IPlatform;
 
-    public function new() {
-        //_platform = platform;
-    }
+    public function new() {}
 
     public function isValid(data : String) : Bool {
         var xml: Xml;
@@ -43,10 +38,6 @@ class XmlConfigParser implements IConfigParser {
         } catch (error : Error) {
             return false;
         }
-
-        //if (xml.node.nodeKind.innerData() != "element") {
-        //    return false;
-        //}
 
         return true;
     }
