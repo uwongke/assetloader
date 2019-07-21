@@ -48,6 +48,8 @@ class XmlConfigParser implements IConfigParser {
         parseXml(Xml.parse(data));
     }
 
+    /** These handlers can be consolidated but for now let's leave them like this to make it easier to troubleshoot */
+
     private function handleGroupAsset(node: Xml, vo:ConfigVO, group: IAssetLoader): Void {
         group.addLoader(parseAsset(parseVo(node, vo)));
     }
@@ -127,7 +129,6 @@ class XmlConfigParser implements IConfigParser {
     }
 
     private function parseAsset(vo : ConfigVO) : ILoader {
-        //Browser.console.log(vo.src);
         return _loaderFactory.produce(vo.id, vo.type, new URLRequest(vo.src), getParams(vo));
     }
 
@@ -139,29 +140,40 @@ class XmlConfigParser implements IConfigParser {
         var child:ConfigVO = new ConfigVO();
         var access = new haxe.xml.Access(xml);
 
-        child.src = access.has.resolve("src") == true ? access.att.resolve("src") : "";
-        child.id = access.has.resolve("id") == true ? access.att.resolve("id") : "";
-        child.base = access.has.resolve("base") == true ? access.att.resolve("base") : inheritFrom.base;
-        child.type = access.has.resolve("type") == true ? access.att.resolve("type") : inheritFrom.type;
-        child.connections = access.has.resolve("connections") == true ? Std.parseInt(access.att.resolve("connections")) : inheritFrom.connections;
-        child.retries = access.has.resolve("retries") == true ?  Std.parseInt(access.att.resolve("retries")) : inheritFrom.retries;
+        var attributes = Reflect.fields(inheritFrom);
+        var access = new haxe.xml.Access(xml);
+
+        /**Set the fields either to Xml value or default (via reflection) */
+        attributes.foreach((it)->{
+            switch(access.has.resolve(it)){
+                case true: {
+                    var value = access.att.resolve(it);
+                    Reflect.setField(child, it, value);
+                }
+                default: Reflect.setField(child, it, Reflect.field(inheritFrom, it));
+            }
+            return true;
+        });
+
         child.onDemand = access.has.resolve("onDemand") == true ? toBoolean(access.att.resolve("onDemand")) : inheritFrom.onDemand;
         child.preventCache = access.has.resolve("preventCache") == true ? toBoolean(access.att.resolve("preventCache")) : inheritFrom.preventCache;
         child.transparent = access.has.resolve("transparent") == true ? toBoolean(access.att.resolve("transparent")) : inheritFrom.transparent;
         child.smoothing = access.has.resolve("smoothing") == true ? toBoolean(access.att.resolve("smoothing")) : inheritFrom.smoothing;
-        child.fillColor = access.has.resolve("fillColor") == true ? Std.parseFloat(access.att.resolve("fillColor")) : inheritFrom.fillColor;
-        child.blendMode = access.has.resolve("blendMode") == true ? access.att.resolve("blendMode") : inheritFrom.blendMode;
-        child.pixelSnapping = access.has.resolve("pixelSnapping") == true ? access.att.resolve("pixelSnapping") : inheritFrom.pixelSnapping;
-        child.priority = access.has.resolve("priority") == true ? Std.parseInt(access.att.resolve("priority")) : -1;
         child.type = child.type.toUpperCase();
         child.xml = xml;
 
-
-        //Browser.console.log("=====parseVo=====");
-        //Browser.console.log(child);
+        //child.src = access.has.resolve("src") == true ? access.att.resolve("src") : "";
+        //child.id = access.has.resolve("id") == true ? access.att.resolve("id") : "";
+        //child.base = access.has.resolve("base") == true ? access.att.resolve("base") : inheritFrom.base;
+        //child.type = access.has.resolve("type") == true ? access.att.resolve("type") : inheritFrom.type;
+        //child.connections = access.has.resolve("connections") == true ? Std.parseInt(access.att.resolve("connections")) : inheritFrom.connections;
+        //child.retries = access.has.resolve("retries") == true ?  Std.parseInt(access.att.resolve("retries")) : inheritFrom.retries;
+        //child.fillColor = access.has.resolve("fillColor") == true ? Std.parseFloat(access.att.resolve("fillColor")) : inheritFrom.fillColor;
+        //child.blendMode = access.has.resolve("blendMode") == true ? access.att.resolve("blendMode") : inheritFrom.blendMode;
+        //child.pixelSnapping = access.has.resolve("pixelSnapping") == true ? access.att.resolve("pixelSnapping") : inheritFrom.pixelSnapping;
+        //child.priority = access.has.resolve("priority") == true ? Std.parseInt(access.att.resolve("priority")) : -1;
 
         //if(access.has.resolve("weight")){
-
             //var weight = convertWeight(access.att.resolve("weight"));
             //Browser.console.log("===============");
             //Browser.console.log(weight);
@@ -263,226 +275,3 @@ class XmlConfigParser implements IConfigParser {
         return false;
     }
 }
-
-//    private function parseXml(data: Xml, inheritFrom : ConfigVO = null) : Void {
-//        var rootVo:ConfigVO = parseVo(data.firstElement(), inheritFrom);
-//        var access = new haxe.xml.Access(data.firstElement());
-//        var children: Array<Xml> = Reflect.field(access, "children");
-//
-//        var filtered: Array<Xml> = new Array<Xml>();
-//
-//        //TODO@Wolfie -> replace with a lambda filter..
-//        children.foreach((it: Xml)->{
-//            var innerChildren: Array<Xml> = Reflect.field(it, "children");
-//            if(innerChildren.length !=0){
-//                filtered.push(it);
-//            }
-//            return true;
-//        });
-//
-//        filtered.foreach((it: Xml)->{
-//            var vo:ConfigVO = parseVo(it, rootVo);
-//
-//            Browser.console.log("=============General=============");
-//            Browser.console.log(vo);
-//
-//            /** Handle Groups */
-//            if(vo.id != "" && vo.src == "") {
-//                var group:IAssetLoader = parseGroup(vo);
-//                assetloader.addLoader(group);
-//                group.addConfig(vo.xml.toString());
-//                Browser.console.log("=============Groups=============");
-//                Browser.console.log(vo);
-//            }
-//            else if(vo.id == "" && vo.src == ""){
-//                /** Handle Assets */
-//                Browser.console.log("=============Assets=============");
-//                Browser.console.log(vo);
-//                assetloader.addLoader(parseAsset(vo));
-//            }
-//            else {
-//                parseXml(it, vo);
-//            }
-//            return true;
-//        });
-//
-//
-//
-//        //Browser.console.log("=================================");
-//        //Browser.console.log(filtered);
-//
-//        //var filtered = Lambda.filter(children, (it: Xml)->{
-//        //    Reflect.field(it, "children").length !=0;
-//        //    return true;
-//        //}).
-//
-//        //var ic: Array<Xml> = Reflect.field(access, "children");
-//        //if(ic.length !=0){
-//        //    Browser.console.log("=================================");
-//        //    Browser.console.log(filtered);
-//        //}
-//
-//
-////        var rootVo : ConfigVO = parseVo(data.firstElement(), inheritFrom);
-////        var access = new haxe.xml.Access(data.firstElement());
-////        var children: Array<Xml> = Reflect.field(access, "children");
-////
-////        children.foreach((child: Xml)->{
-////            var innerChildren: Array<Xml> = Reflect.field(child, "children");
-////            //Browser.console.log(innerChildren);
-////
-////            if(innerChildren.length !=0){
-////                var vo : ConfigVO = parseVo(child, rootVo);
-////
-////                if((vo.id != "" || vo.id != null) && (vo.src == "" || vo.src == null)) {
-////                    var group : IAssetLoader = parseGroup(vo);
-////                    assetloader.addLoader(group);
-////                    group.addConfig(vo.xml.toString());
-////                }
-////                else if(vo.id != "" && vo.src != ""){
-////                    assetloader.addLoader(parseAsset(vo));
-////                }
-////                else {
-////                    //Browser.console.log("=================================");
-////                    //parseXml(child, vo);
-////                }
-////            }
-////            return true;
-////        });
-//    }
-
-//private function recurseNodes(node: Xml, vo:ConfigVO):Void {
-//        var children:Array<Xml> = Reflect.field(node, "children");
-//        var filtered:Array<Xml> = new Array<Xml>();
-//
-//        /** Filter out empty nodes */
-//        children.foreach((it: Xml)->{
-//            var innerChildren: Array<Xml> = Reflect.field(it, "children");
-//            if(children.length !=0){ filtered.push(it); }
-//            return true;
-//        });
-//
-//        var test = Reflect.field(node, "nodeName");
-//
-//        Browser.console.log(test);
-//
-//        switch(Reflect.field(node, "nodeName")){
-//            case "group": {
-//                //var group : IAssetLoader = parseGroup(vo);
-//                //assetloader.addLoader(group);
-//                //group.addConfig(vo.xml.toString());
-//                //parseXml(node, vo);
-//                Browser.console.log("group");
-//                Browser.console.log(node);
-//            }
-//            case "asset": {
-//                //var asset = parseAsset(vo);
-//                //assetloader.addLoader(asset);
-//
-//                Browser.console.log("asset");
-//                Browser.console.log(node);
-//            }
-//            default:
-//                //parseXml(node, vo);
-//                //Browser.console.log("default");
-//                //Browser.console.log(node);
-//        }
-//
-//        //filtered.foreach((it: Xml)->{
-//        //    if(Reflect.field(it, "nodeName") !=null){
-//        //        var voo:ConfigVO = parseVo(it, vo);
-//                //recurseNodes(it, voo);
-//        //    }
-//        //    return true;
-//        //});
-//
-//
-////        switch(Reflect.field(node, "nodeName")){
-////            case "group": {
-////                var group : IAssetLoader = parseGroup(vo);
-////                //Browser.console.log(group);
-////                assetloader.addLoader(group);
-////                group.addConfig(vo.xml.toString());
-////                var groupChildren: Array<Xml> = Reflect.field(node, "children");
-////                groupChildren.foreach((it: Xml)->{
-////                    if(Reflect.field(it, "nodeName") !=null){
-////                        var voo:ConfigVO = parseVo(it, vo);
-////                        recurseNodes(it, voo);
-////                    };
-////                    return true;
-////                });
-////                //Browser.console.log(groupChildren);
-////            }
-////            case "asset": {
-////                var asset = parseAsset(vo);
-////                //Browser.console.log(asset);
-////                assetloader.addLoader(asset);
-////            }
-////            default: {
-////                //Browser.console.log(node);
-////                //parseXml(node, vo);
-////            }
-////        }
-//
-//        //filtered.foreach((it: Xml)->{
-//        //    if(Reflect.field(it, "nodeName") !=null){
-//        //        var voo:ConfigVO = parseVo(it, vo);
-//        //        recurseNodes(it, voo);
-//        //    }
-//        //    return true;
-//        //});
-//    }
-
-//var rootVo:ConfigVO = parseVo(xml.firstElement(), inheritFrom);
-
-//var children:Array<Xml> = Reflect.field(xml.firstElement(), "children");
-//var topLevel:Array<Xml> = new Array<Xml>();
-
-//children.foreach((it: Xml)->{
-//    var innerChildren: Array<Xml> = Reflect.field(it, "children");
-//    if(innerChildren.length !=0){
-//        topLevel.push(it);
-//    }
-//    return true;
-//});
-
-//topLevel.foreach((it: Xml)->{
-//    var vo:ConfigVO = parseVo(it, rootVo);
-//    recurseNodes(it, vo);
-//    return true;
-//});
-
-//var filtered = filterChildren(children);
-//Browser.console.log(children);
-
-
-
-/** Intentional shadowing... */
-//        children  = Reflect.field(xml, "children");
-//        children.foreach((it: Xml)->{
-//            //Browser.console.log(it);
-//
-//            var vo:ConfigVO = parseVo(it.firstElement(), rootVo);
-//
-//
-//            if(vo.id != "" && vo.src == "") {
-//                //Browser.console.log("=====GROUP=====");
-//                //Browser.console.log(vo);
-//                //var group : IAssetLoader = parseGroup(vo);
-//                //_assetloader.addLoader(group);
-//                //group.addConfig(vo.xml.toString());
-//            }
-//            else if(vo.id != "" && vo.src != ""){
-//                //Browser.console.log("=====ASSET=====");
-//                //Browser.console.log(vo);
-//                //_assetloader.addLoader(parseAsset(vo));
-//            }
-//            else {
-//                //Browser.console.log("=====OTHER=====");
-//                //Browser.console.log(it);
-//                //Browser.console.log(vo);
-//                //parseXml(it, vo);
-//            }
-//
-//            return true;
-//        });

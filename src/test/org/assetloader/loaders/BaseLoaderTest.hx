@@ -38,22 +38,4 @@ class BaseLoaderTest extends AbstractLoaderTest {
         assertEquals(null, _loader.loaded);
         assertEquals(null, _loader.failed);
     }
-
-    public function test_booleanStateAfterStoppedLoad():Void {
-        //Browser.console.log("===================");
-        _loader.start();
-        _loader.stop();
-        //assertEquals(null, _loader.invoked);
-        //assertEquals(null, _loader.inProgress);
-        //Assert.areEqual(true, _loader.invoked);  // null
-        //Assert.areEqual(false, _loader.inProgress);  // null
-        //Assert.areEqual(true, _loader.stopped);  // null
-        //Assert.areEqual(false, _loader.loaded);  // null
-        //Assert.areEqual(false, _loader.failed);  // null
-    }
-
-
-
-
-
 }
