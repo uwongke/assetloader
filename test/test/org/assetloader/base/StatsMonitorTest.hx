@@ -1,9 +1,9 @@
 package test.org.assetloader.base;
 
 import openfl.net.URLRequest;
-import org.assetloader.loaders.TextLoader;
-import org.assetloader.core.ILoader;
 import org.assetloader.base.StatsMonitor;
+import org.assetloader.core.ILoader;
+import org.assetloader.loaders.TextLoader;
 
 class StatsMonitorTest extends haxe.unit.TestCase {
 

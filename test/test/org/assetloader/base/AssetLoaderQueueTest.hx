@@ -1,9 +1,8 @@
 package test.org.assetloader.base;
 
-import js.Browser;
 import openfl.net.URLRequest;
-import org.assetloader.loaders.TextLoader;
 import org.assetloader.AssetLoader;
+import org.assetloader.loaders.TextLoader;
 
 class AssetLoaderQueueTest extends haxe.unit.TestCase {
 

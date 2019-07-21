@@ -1,5 +1,6 @@
+package ;
+
 import test.TestRunner;
-import js.Browser;
 
 class Main {
     public function new(valueClasses: Array<Dynamic> = null) {

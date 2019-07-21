@@ -1,8 +1,8 @@
 package test.org.assetloader.base;
 
-import org.assetloader.core.IParam;
 import openfl.system.LoaderContext;
 import org.assetloader.base.Param;
+import org.assetloader.core.IParam;
 
 class ParamTest extends haxe.unit.TestCase {
     private var _param : Param;

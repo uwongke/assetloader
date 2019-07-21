@@ -3,11 +3,12 @@
     <meta title="assetloader" package="org.assetloader" version="1.0.0" company="Wolfie" />
     <app main="Main" file="assetloader" path="webRoot" />
 
-    <source path="src" />
+    <source path="." />
 
     <haxelib name="openfl" />
     <haxelib name="hx3compat" />
     <haxelib name="osflash-signals" />
     <haxelib name="as3hx" />
+    <haxelib name="assetloader" />
 
 </project>

@@ -1,6 +1,5 @@
 package test.org.assetloader.loaders;
 
-import js.Browser;
 import org.osflash.signals.events.GenericEvent;
 import test.org.assetloader.base.AbstractLoaderTest;
 

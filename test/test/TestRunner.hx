@@ -1,11 +1,11 @@
 package test;
 
-import test.org.assetloader.loaders.BaseLoaderTest;
-import test.org.assetloader.base.AssetLoaderQueueTest;
 import test.org.assetloader.base.AbstractLoaderTest;
-import test.org.assetloader.parsers.XmlConfigParserTest;
+import test.org.assetloader.base.AssetLoaderQueueTest;
 import test.org.assetloader.base.ParamTest;
+import test.org.assetloader.loaders.BaseLoaderTest;
 import test.org.assetloader.parsers.URLParserTest;
+import test.org.assetloader.parsers.XmlConfigParserTest;
 //import test.org.assetloader.base.StatsMonitorTest;
 
 

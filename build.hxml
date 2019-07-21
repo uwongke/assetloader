@@ -1,8 +1,0 @@
--cp src
--D analyzer-optimize
--lib openfl
--lib hx3compat
--lib as3hx
--lib osflash-signals
--main Main
--js webRoot/assetloader.js

@@ -1,13 +1,12 @@
 package test.org.assetloader.parsers;
 
-import org.assetloader.core.ILoader;
-import org.assetloader.base.Param;
-import org.assetloader.base.AssetType;
-import org.assetloader.core.IConfigParser;
-import js.Browser;
 import org.assetloader.AssetLoader;
-import org.assetloader.parsers.XmlConfigParser;
+import org.assetloader.base.AssetType;
+import org.assetloader.base.Param;
 import org.assetloader.core.IAssetLoader;
+import org.assetloader.core.IConfigParser;
+import org.assetloader.core.ILoader;
+import org.assetloader.parsers.XmlConfigParser;
 
 class XmlConfigParserTest extends haxe.unit.TestCase {
 

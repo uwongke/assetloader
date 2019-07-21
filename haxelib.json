@@ -1,0 +1,14 @@
+{
+  "name": "assetloader",
+  "url" : "https://github.com/WolfieWerewolf/assetloader",
+  "license": "MIT",
+  "tags": [],
+  "description": "poptropica assetloader package",
+  "version": "1.0.0",
+  "classPath": "src/",
+  "releasenote": "",
+  "contributors": ["Wolfie"],
+  "dependencies": {
+    "hx3compat": "1.0.3"
+  }
+}

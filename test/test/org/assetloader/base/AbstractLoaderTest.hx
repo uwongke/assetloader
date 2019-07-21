@@ -1,9 +1,9 @@
 package test.org.assetloader.base;
 
-import org.assetloader.core.ILoadStats;
 import org.assetloader.base.AbstractLoader;
 import org.assetloader.base.AssetType;
 import org.assetloader.core.ILoader;
+import org.assetloader.core.ILoadStats;
 
 class AbstractLoaderTest extends haxe.unit.TestCase {
 
