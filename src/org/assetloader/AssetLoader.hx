@@ -1,6 +1,5 @@
 package org.assetloader;
 
-import js.Browser;
 import openfl.errors.Error;
 import openfl.net.URLRequest;
 
@@ -161,8 +160,6 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
 
     public function addConfig(config : String):Void {
         var urlParser: URLParser = new URLParser(config);
-
-        //Browser.console.log(urlParser);
 
         if(urlParser.isValid) {
             var loader:ILoader = _loaderFactory.produce("config", AssetType.TEXT, new URLRequest(config));

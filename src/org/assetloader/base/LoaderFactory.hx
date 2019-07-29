@@ -14,8 +14,6 @@ import org.assetloader.parsers.URLParser;
 
 import openfl.net.URLRequest;
 
-import js.Browser;
-
 using Lambda;
 
 class LoaderFactory {
@@ -40,11 +38,6 @@ class LoaderFactory {
             case null: new Array<Dynamic>();
             default: params;
         }
-
-//        Browser.console.log("============================");
-//        Browser.console.log(type);
-//        Browser.console.log(id);
-//        Browser.console.log(vo.src);
 
         if (request != null) {
             var urlParser : URLParser = new URLParser(request.url);
@@ -153,6 +146,5 @@ class LoaderFactory {
             //default:
             //    throw new AssetLoaderError(AssetLoaderError.ASSET_TYPE_NOT_RECOGNIZED);
         }
-        //Browser.console.log(_loader);
     }
 }

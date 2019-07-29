@@ -7,7 +7,6 @@ import org.assetloader.core.ILoader;
 import org.assetloader.base.LoaderFactory;
 import org.assetloader.base.Param;
 import org.assetloader.base.AssetType;
-import js.Browser;
 
 import org.assetloader.core.IAssetLoader;
 import org.assetloader.core.IConfigParser;
@@ -175,8 +174,6 @@ class XmlConfigParser implements IConfigParser {
 
         //if(access.has.resolve("weight")){
             //var weight = convertWeight(access.att.resolve("weight"));
-            //Browser.console.log("===============");
-            //Browser.console.log(weight);
         //}
 
         //child.src = access.has.resolve("weight") == true ? access.att.resolve("weight") : "";
@@ -242,9 +239,6 @@ class XmlConfigParser implements IConfigParser {
         }
 
         var test = new as3hx.Compat.Regex(" ", "g");
-        //Browser.console.log("==================");
-        //Browser.console.log(test);
-        //Browser.console.log("==================");
         //str = StringTools.replace(new as3hx.Compat.Regex(" ", "g"), "");
 
         //var mbExp : as3hx.Compat.Regex = new as3hx.Compat.Regex("mb", "gi");

@@ -17,7 +17,6 @@ package org.assetloader.parsers;
 	  If Absolute no trailing slash required. E.g. http://www.matan.co.za/getGalleryXML
 	  If Relative trailing slash IS required. E.g. getGalleryXML/
 	  Note: if relative with multiple pathings the trailing slash isn't required. E.g. scripts/getGalleryXML */
-import js.Browser;
 import openfl.net.URLVariables;
 class URLParser {
 
@@ -154,8 +153,6 @@ class URLParser {
                     }
                 }
             }
-
-            //Browser.console.log(path);
 
             /** Handle urlVariables */
             if(_urlVariables != null){

@@ -1,7 +1,5 @@
 package org.assetloader.base;
 
-import js.Browser;
-
 import org.assetloader.core.*;
 import org.assetloader.parsers.XmlConfigParser;
 import openfl.net.URLRequest;
@@ -253,9 +251,6 @@ class AssetLoaderBase extends AbstractLoader {
             throw new AssetLoaderError(AssetLoaderError.CIRCULAR_REFERENCE_FOUND(_id));
         }
 
-        //Browser.console.log("=====================================");
-        //Browser.console.log(signal);
-        //Browser.console.log(parent);
         super.addedToParent_handler(signal, parent);
     }
 

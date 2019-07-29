@@ -1,6 +1,5 @@
 package org.assetloader.base;
 
-import js.Browser;
 import org.assetloader.core.IAssetLoader;
 import org.assetloader.signals.HttpStatusSignal;
 import org.assetloader.signals.ProgressSignal;

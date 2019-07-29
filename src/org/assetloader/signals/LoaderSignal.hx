@@ -1,6 +1,5 @@
 package org.assetloader.signals;
 
-import js.Browser;
 import org.assetloader.core.ILoader;
 import org.osflash.signals.Signal;
 
