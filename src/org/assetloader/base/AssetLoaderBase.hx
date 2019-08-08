@@ -127,34 +127,33 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function addLoader(loader:ILoader):Void {
-        if (hasLoader(loader.id)) {
-            throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINS_LOADER_WITH_ID(_id, loader.id));
+        if (!hasLoader(loader.id)) {
+            //throw new AssetLoaderError(AssetLoaderError.ALREADY_CONTAINS_LOADER_WITH_ID(_id, loader.id));
+            _loaders.set(loader.id, loader);
+            _ids.push(loader.id);
+            _numLoaders = _ids.length;
+
+            if (loader.loaded) {
+                _loadedIds.push(loader.id);
+                _numLoaded = _loadedIds.length;
+                _assets[loader.id] = loader.data;
+            }
+            else if (loader.failed) {
+                _failedIds.push(loader.id);
+                _numFailed = _failedIds.length;
+            }
+
+            _failed = (_numFailed > 0);
+            _loaded = (_numLoaders == _numLoaded);
+
+            if (loader.getParam(Param.PRIORITY) == 0) {
+                loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
+            }
+
+            loader.onStart.add(start_handler);
+            updateTotalBytes();
+            loader.onAddedToParent.dispatch([loader, this]);
         }
-
-        _loaders.set(loader.id, loader);
-        _ids.push(loader.id);
-        _numLoaders = _ids.length;
-
-        if (loader.loaded) {
-            _loadedIds.push(loader.id);
-            _numLoaded = _loadedIds.length;
-            _assets[loader.id] = loader.data;
-        }
-        else if (loader.failed) {
-            _failedIds.push(loader.id);
-            _numFailed = _failedIds.length;
-        }
-
-        _failed = (_numFailed > 0);
-        _loaded = (_numLoaders == _numLoaded);
-
-        if (loader.getParam(Param.PRIORITY) == 0) {
-            loader.setParam(Param.PRIORITY, -(_numLoaders - 1));
-        }
-
-        loader.onStart.add(start_handler);
-        updateTotalBytes();
-        loader.onAddedToParent.dispatch([loader, this]);
     }
 
     public function remove(id : String) : ILoader {
