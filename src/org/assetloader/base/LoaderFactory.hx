@@ -4,11 +4,12 @@ package org.assetloader.base;
 
 /** Hosted in this Library for now.  TODO@WOlfie -> Discuss with @Michael */
 
-import org.assetloader.loaders.SWFLoader;
+import org.assetloader.core.*;
 import org.assetloader.loaders.JSONLoader;
 import org.assetloader.loaders.SoundLoader;
+import org.assetloader.loaders.SWFBundleLoader;
+import org.assetloader.loaders.SWFLoader;
 import org.assetloader.loaders.TextLoader;
-import org.assetloader.core.*;
 import org.assetloader.loaders.XMLLoader;
 import org.assetloader.parsers.URLParser;
 
@@ -131,7 +132,7 @@ class LoaderFactory {
             case AssetType.JSON:
                 _loader = new JSONLoader(request, id);
             case AssetType.SWF:
-                _loader = new SWFLoader(request, id);
+                _loader = new SWFBundleLoader(request, id);
 
             default:
                 _loader = new XMLLoader(request, id);

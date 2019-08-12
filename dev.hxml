@@ -1,0 +1,6 @@
+-cp src
+-lib as3hx
+-lib hx3compat
+-lib lime
+-lib openfl
+-lib osflash-signals

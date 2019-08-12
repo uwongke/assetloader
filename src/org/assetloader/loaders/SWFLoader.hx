@@ -1,16 +1,16 @@
 package org.assetloader.loaders;
 
-import openfl.errors.Error;
 import openfl.display.DisplayObject;
-import openfl.events.IEventDispatcher;
+import openfl.display.Sprite;
+import openfl.errors.Error;
 import openfl.events.Event;
-import org.assetloader.base.Param;
+import openfl.events.IEventDispatcher;
+import openfl.net.URLRequest;
 import openfl.system.LoaderContext;
 import openfl.system.SecurityDomain;
 import org.assetloader.base.AssetType;
-import openfl.net.URLRequest;
+import org.assetloader.base.Param;
 import org.assetloader.signals.LoaderSignal;
-import openfl.display.Sprite;
 
 class SWFLoader extends DisplayObjectLoader {
     public var swf(get, never):Sprite;
@@ -23,13 +23,7 @@ class SWFLoader extends DisplayObjectLoader {
     public function new(request : URLRequest, id : String = null) {
         super(request, id);
         _type = AssetType.SWF;
-        //if (PlatformUtils.inBrowser) {
-        // TODO @ WOlfie -> PlatformUtils exists in the main game library, not out here...
-            addParam(new Param(Param.LOADER_CONTEXT, new LoaderContext(false, null, SecurityDomain.currentDomain)));
-        //}
-        //else {
-        //    addParam(new Param(Param.LOADER_CONTEXT, new LoaderContext(false, ApplicationDomain.currentDomain)));
-        //}
+        addParam(new Param(Param.LOADER_CONTEXT, new LoaderContext(false, null, SecurityDomain.currentDomain)));
     }
 
     override private function initSignals() : Void {
