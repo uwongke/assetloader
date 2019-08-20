@@ -64,7 +64,7 @@ class SWFBundleLoader extends BaseLoader {
     }
 
     override private function complete_handler(event:Event):Void {
-        _swf = _loader.content;
+        _data = _swf = _loader.content;
         super.complete_handler(event);
     }
 }
