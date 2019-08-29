@@ -93,7 +93,7 @@ class AssetLoaderBase extends AbstractLoader {
         return _onConfigLoaded;
     }
 
-    private var _loaders : Dictionary<String, Dynamic>;
+    private var _loaders : Dictionary<String, ILoader>;
 
     private var _assets : Dictionary<String, Dynamic>;
 
@@ -205,7 +205,7 @@ class AssetLoaderBase extends AbstractLoader {
 
         _loaders.foreach((it->{
             if (!it.getParam(Param.ON_DEMAND)) {
-                bytesTotal += it._stats.bytesTotal;
+                bytesTotal += it.stats.bytesTotal;
             }
             return true;
         }));
@@ -288,8 +288,8 @@ class AssetLoaderBase extends AbstractLoader {
         var bytesTotal:Int = 0;
 
         _loaders.foreach((it->{
-            bytesLoaded += it._stats.bytesLoaded;
-            bytesTotal += it._stats.bytesTotal;
+            bytesLoaded += it.stats.bytesLoaded;
+            bytesTotal += it.stats.bytesTotal;
             return true;
         }));
 
@@ -316,13 +316,13 @@ class AssetLoaderBase extends AbstractLoader {
 
     public function getAssetLoader(id : String) : IAssetLoader {
         if (hasAssetLoader(id)) {
-            return Reflect.field(_loaders, id);
+            return cast(_loaders.get(id), IAssetLoader);
         }
         return null;
     }
 
     public function getAsset(id : String) : Dynamic {
-        return Reflect.field(_assets, id);
+        return _assets.get(id);
     }
 
     override private function get_data() : Dynamic {
@@ -334,7 +334,7 @@ class AssetLoaderBase extends AbstractLoader {
     }
 
     public function hasAssetLoader(id : String) : Bool {
-        return (_loaders.exists(id) && Std.is(Reflect.field(_loaders, id), IAssetLoader));
+        return (_loaders.exists(id) && Std.is(_loaders.get(id), IAssetLoader));
     }
 
     public function hasAsset(id : String) : Bool {
