@@ -25,7 +25,7 @@ class ErrorSignal extends LoaderSignal {
 
         args.splice(1, 2);
 
-        super.dispatch([null, args]);
+        super.dispatch(args);
     }
 
     /** Gets the error type. */
