@@ -19,7 +19,7 @@ class JSONLoader extends TextLoader {
 
     override private function initSignals(): Void {
         super.initSignals();
-        _onComplete = new LoaderSignal([Object]);
+        _onComplete = new LoaderSignal();
     }
 
     override public function destroy():Void {
