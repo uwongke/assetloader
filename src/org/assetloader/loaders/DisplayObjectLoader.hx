@@ -12,6 +12,8 @@ import openfl.display.Loader;
 import openfl.display.LoaderInfo;
 import openfl.display.DisplayObject;
 
+using org.assetloader.loaders.LoaderUtil;
+
 class DisplayObjectLoader extends BaseLoader {
     public var displayObject(get, never): DisplayObject;
     public var contentLoaderInfo(get, never): LoaderInfo;
@@ -41,6 +43,7 @@ class DisplayObjectLoader extends BaseLoader {
         if (_invoked) {
             try {
                 _loader.close();
+                _loader.removeLoaderParentage(_displayObject);
             } catch (error : Error) {
             }
         }
@@ -49,6 +52,7 @@ class DisplayObjectLoader extends BaseLoader {
 
     override public function destroy() : Void {
         super.destroy();
+        _loader.removeLoaderParentage(_displayObject);
         _loader = null;
         _displayObject = null;
         _data = null;
@@ -64,6 +68,7 @@ class DisplayObjectLoader extends BaseLoader {
             return;
         }
 
+        _loader.removeLoaderParentage(_displayObject);
         super.complete_handler(event);
     }
 
@@ -81,5 +86,6 @@ class DisplayObjectLoader extends BaseLoader {
     private function get_contentLoaderInfo() : LoaderInfo {
         return (_loader != null) ? _loader.contentLoaderInfo : null;
     }
+
 }
 

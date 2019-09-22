@@ -11,6 +11,8 @@ import org.assetloader.base.AssetType;
 import org.assetloader.base.Param;
 import org.assetloader.signals.LoaderSignal;
 
+using org.assetloader.loaders.LoaderUtil;
+
 class SWFBundleLoader extends BaseLoader {
     public var onInit(get, never):LoaderSignal;
 
@@ -47,12 +49,14 @@ class SWFBundleLoader extends BaseLoader {
         if (_invoked) {
             try {
                 _loader.close();
+                _loader.removeLoaderParentage(_data);
             } catch (error:Error) {}
         }
         super.stop();
     }
 
     override public function destroy():Void {
+        _loader.removeLoaderParentage(_data);
         super.destroy();
         _loader = null;
     }
@@ -65,6 +69,7 @@ class SWFBundleLoader extends BaseLoader {
 
     override private function complete_handler(event:Event):Void {
         _data = _swf = _loader.content;
+        _loader.removeLoaderParentage(_data);
         super.complete_handler(event);
     }
 }
