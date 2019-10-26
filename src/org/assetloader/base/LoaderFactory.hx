@@ -4,6 +4,7 @@ package org.assetloader.base;
 
 /** Hosted in this Library for now.  TODO@WOlfie -> Discuss with @Michael */
 
+import org.assetloader.loaders.GafBundleLoader;
 import org.assetloader.core.*;
 import org.assetloader.loaders.JSONLoader;
 import org.assetloader.loaders.SoundLoader;
@@ -132,7 +133,11 @@ class LoaderFactory {
             case AssetType.JSON:
                 _loader = new JSONLoader(request, id);
             case AssetType.SWF:
-                _loader = new SWFBundleLoader(request, id);
+            {
+
+                _loader = new GafBundleLoader(request, id);
+               // _loader = new SWFBundleLoader(request, id);
+            }
 
             default:
                 _loader = new XMLLoader(request, id);
