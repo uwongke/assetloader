@@ -154,6 +154,8 @@ class AbstractLoader implements ILoader {
 
     public var cache:Bool;
 
+    public var keepInCache:Bool;
+
     private var _onError:ErrorSignal;
 
     private var _onHttpStatus:HttpStatusSignal;
