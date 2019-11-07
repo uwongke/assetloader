@@ -28,11 +28,12 @@ class GafBundleLoader extends BaseLoader {
     ///////////////TODO: remove temporary caching. Global cache system must work///////////
     private static var temp_cache:Map<String, Sprite> = new Map<String, Sprite>();
     private static var items_to_cache:Array<String>
-    = [ "game/assets/ui/toolTip/navigationArrow.swf",
-        "game/assets/ui/toolTip/exitPointer3D.swf",
-        "game/assets/entity/character/mouth/1.swf",
-        "game/assets/entity/character/mouth/ooh.swf",
-        "game/assets/ui/toolTip/clickPointer.swf"
+    = [
+//        "game/assets/ui/toolTip/navigationArrow.swf",
+//        "game/assets/ui/toolTip/exitPointer3D.swf",
+//        "game/assets/entity/character/mouth/1.swf",
+//        "game/assets/entity/character/mouth/ooh.swf",
+//        "game/assets/ui/toolTip/clickPointer.swf"
     ];
     //////////////////////////////////////////////////////////////////////
     private var _origURl:String = null;
@@ -43,6 +44,7 @@ class GafBundleLoader extends BaseLoader {
         //temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
         super(newReq, AssetType.SWF, id);
+        setPreventCache(true);
     }
 
     override private function initSignals() : Void {

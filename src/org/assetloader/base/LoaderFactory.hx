@@ -134,7 +134,6 @@ class LoaderFactory {
                 _loader = new JSONLoader(request, id);
             case AssetType.SWF:
             {
-
                 _loader = new GafBundleLoader(request, id);
                // _loader = new SWFBundleLoader(request, id);
             }
