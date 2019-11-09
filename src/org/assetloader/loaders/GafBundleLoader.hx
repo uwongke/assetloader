@@ -26,7 +26,7 @@ class GafBundleLoader extends BaseLoader {
     private var _swf : Sprite;
 
     ///////////////TODO: remove temporary caching. Global cache system must work///////////
-    private static var temp_cache:Map<String, Sprite> = new Map<String, Sprite>();
+    private static var temp_cache:Map<String, GafFactory> = new Map<String, GafFactory>();
     private static var items_to_cache:Array<String>
     = [
 //        "game/assets/ui/toolTip/navigationArrow.swf",
@@ -63,7 +63,7 @@ class GafBundleLoader extends BaseLoader {
         {
 
             trace("Get asset from cache, remove this logic later " + _origURl);
-            var spr = temp_cache[_origURl];
+            var spr = temp_cache[_origURl].getSprite("rootTimeline", false, 30, true);
             if (spr.stage == null)
             {
                 _data = spr;
@@ -104,6 +104,7 @@ class GafBundleLoader extends BaseLoader {
             return;
         }
         var gb:GafZipBundle = new GafZipBundle();
+        gb.name = _origURl;
         gb.init(bytes).onComplete(onCompleteGafBundle);
     }
 
@@ -137,13 +138,13 @@ class GafBundleLoader extends BaseLoader {
 
         var gf:GafFactory = new GafFactory();
         gf.intiFromZipBundle(gb);
-        var spr = gf.getSprite("rootTimeline", false, 30, false);
+        var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
-        if (items_to_cache.indexOf(_origURl) >= 0)
+        if (true || items_to_cache.indexOf(_origURl) >= 0)
         {
-            //temp_cache[_origURl] = gf;
-            temp_cache[_origURl] = _data;
+           // temp_cache[_origURl] = gf;
+           // temp_cache[_origURl] = _data;
         }
         super.complete_handler(null);
     }
