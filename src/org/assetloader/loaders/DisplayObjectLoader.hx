@@ -15,42 +15,42 @@ import openfl.display.DisplayObject;
 using org.assetloader.loaders.LoaderUtil;
 
 class DisplayObjectLoader extends BaseLoader {
-    public var displayObject(get, never): DisplayObject;
-    public var contentLoaderInfo(get, never): LoaderInfo;
-    private var _displayObject : DisplayObject;
+    public var displayObject(get, never):DisplayObject;
+    public var contentLoaderInfo(get, never):LoaderInfo;
 
-    private var _loader : Loader;
+    private var _displayObject:DisplayObject;
 
-    public function new(request : URLRequest, id : String = null) {
+    private var _loader:Loader;
+
+    public function new(request:URLRequest, id:String = null) {
         super(request, AssetType.DISPLAY_OBJECT, id);
     }
 
-    override private function initSignals() : Void {
+    override private function initSignals():Void {
         super.initSignals();
         _onComplete = new LoaderSignal([DisplayObject]);
     }
 
-    override private function constructLoader() : IEventDispatcher {
+    override private function constructLoader():IEventDispatcher {
         _loader = new Loader();
         return _loader.contentLoaderInfo;
     }
 
-    override private function invokeLoading() : Void {
+    override private function invokeLoading():Void {
         _loader.load(request, getParam(Param.LOADER_CONTEXT));
     }
 
-    override public function stop() : Void {
+    override public function stop():Void {
         if (_invoked) {
             try {
                 _loader.close();
                 _loader.removeLoaderParentage(_displayObject);
-            } catch (error : Error) {
-            }
+            } catch (error:Error) {}
         }
         super.stop();
     }
 
-    override public function destroy() : Void {
+    override public function destroy():Void {
         super.destroy();
         _loader.removeLoaderParentage(_displayObject);
         _loader = null;
@@ -58,10 +58,10 @@ class DisplayObjectLoader extends BaseLoader {
         _data = null;
     }
 
-    override private function complete_handler(event : Event) : Void {
+    override private function complete_handler(event:Event):Void {
         _data = _displayObject = _loader.content;
 
-        var testResult : String = testData(_data);
+        var testResult:String = testData(_data);
 
         if (testResult != "") {
             _onError.dispatch([this, ErrorEvent.ERROR, testResult]);
@@ -73,19 +73,17 @@ class DisplayObjectLoader extends BaseLoader {
     }
 
     /** Error message, empty String if no error occurred. */
-    private function testData(data : DisplayObject) : String {
+    private function testData(data:DisplayObject):String {
         return !(data != null) ? "Data is not a DisplayObject." : "";
     }
 
     /** Gets the resulting DisplayObject after loading is complete. */
-    private function get_displayObject() : DisplayObject {
+    private function get_displayObject():DisplayObject {
         return _displayObject;
     }
 
     /** Gets the current content's LoaderInfo. */
-    private function get_contentLoaderInfo() : LoaderInfo {
+    private function get_contentLoaderInfo():LoaderInfo {
         return (_loader != null) ? _loader.contentLoaderInfo : null;
     }
-
 }
-
