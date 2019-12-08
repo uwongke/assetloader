@@ -21,83 +21,78 @@ import org.assetloader.signals.LoaderSignal;
 using org.assetloader.loaders.LoaderUtil;
 
 class GafBundleLoader extends BaseLoader {
-    private var _loader : URLStream;
+    private var _loader:URLStream;
+
     public var swf(get, never):Sprite;
-    private var _swf : Sprite;
+
+    private var _swf:Sprite;
 
     ///////////////TODO: remove temporary caching. Global cache system must work///////////
     private static var temp_cache:Map<String, GafFactory> = new Map<String, GafFactory>();
-    private static var items_to_cache:Array<String>
-    = [
-//        "game/assets/ui/toolTip/navigationArrow.swf",
-//        "game/assets/ui/toolTip/exitPointer3D.swf",
-//        "game/assets/entity/character/mouth/1.swf",
-//        "game/assets/entity/character/mouth/ooh.swf",
-//        "game/assets/ui/toolTip/clickPointer.swf"
+    private static var items_to_cache:Array<String> = [
+        //        "game/assets/ui/toolTip/navigationArrow.swf",
+        //        "game/assets/ui/toolTip/exitPointer3D.swf",
+        //        "game/assets/entity/character/mouth/1.swf",
+        //        "game/assets/entity/character/mouth/ooh.swf",
+        //        "game/assets/ui/toolTip/clickPointer.swf"
     ];
+
     //////////////////////////////////////////////////////////////////////
     private var _origURl:String = null;
 
-    public function new(request : URLRequest, id : String = null) {
-
+    public function new(request:URLRequest, id:String = null) {
         _origURl = request.url;
-        //temp_cache = new Map<String, Sprite>();
+        // temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
         super(newReq, AssetType.SWF, id);
         setPreventCache(true);
     }
 
-    override private function initSignals() : Void {
+    override private function initSignals():Void {
         super.initSignals();
         _onComplete = new LoaderSignal([String]);
     }
 
-    override private function constructLoader() : IEventDispatcher {
+    override private function constructLoader():IEventDispatcher {
         _loader = new URLStream();
         return _loader;
     }
 
-    override private function invokeLoading() : Void {
+    override private function invokeLoading():Void {
         /////////////TODO: remove temporary caching. Global cache system must work
-        if(temp_cache.exists(_origURl))
-        {
-
+        if (temp_cache.exists(_origURl)) {
             trace("Get asset from cache, remove this logic later " + _origURl);
             var spr = temp_cache[_origURl].getSprite("rootTimeline", false, 30, true);
-            if (spr.stage == null)
-            {
+            if (spr.stage == null) {
                 _data = spr;
             }
 
-            if (_data != null)
-            {
+            if (_data != null) {
                 super.complete_handler(null);
             }
             return;
-
         }
         //////////////////////////////////////////////////////////////////////////
         _loader.load(request);
-       // error_handler(null);
+        // error_handler(null);
     }
 
-    override public function stop() : Void {
+    override public function stop():Void {
         if (_invoked) {
             try {
                 _loader.close();
-            } catch (error : Error) {
-            }
+            } catch (error:Error) {}
         }
         super.stop();
     }
 
-    override public function destroy() : Void {
+    override public function destroy():Void {
         super.destroy();
         _loader = null;
     }
 
-    override private function complete_handler(event : Event) : Void {
-        var bytes : ByteArray = new ByteArray();
+    override private function complete_handler(event:Event):Void {
+        var bytes:ByteArray = new ByteArray();
         _loader.readBytes(bytes);
         if (bytes.length == 0) {
             _onError.dispatch([this, ErrorEvent.ERROR, null]);
@@ -109,31 +104,28 @@ class GafBundleLoader extends BaseLoader {
     }
 
     /**
-    *  Error while loading .zip
+     *  Error while loading .zip
     **/
-    override function error_handler(event : ErrorEvent) : Void
-    {
+    override function error_handler(event:ErrorEvent):Void {
         trace(" Error loading gaf .zip: " + event);
-        var swfLoader:SWFBundleLoader
-        = new SWFBundleLoader(new URLRequest(StringTools.replace(request.url, '.zip', '.bundle')), id);
+        var swfLoader:SWFBundleLoader = new SWFBundleLoader(new URLRequest(StringTools.replace(request.url, '.zip', '.bundle')), id);
         swfLoader.onComplete.addOnce(swfCompleteHandler);
         swfLoader.onError.addOnce(swfErrorHandler);
         swfLoader.start();
-
     }
-    function swfErrorHandler(signal : ErrorSignal):Void
-    {
+
+    function swfErrorHandler(signal:ErrorSignal):Void {
         trace("Error loading .swf: " + signal.loader.request.url);
         super.error_handler(new ErrorEvent(signal.type, false, false, signal.message));
     }
-    function swfCompleteHandler(signal:LoaderSignal, data:Dynamic = null):Void
-    {
+
+    function swfCompleteHandler(signal:LoaderSignal, data:Dynamic = null):Void {
         trace("swf loading complete: " + signal.loader.request.url);
         _data = data;
         super.complete_handler(null);
     }
-    private function onCompleteGafBundle(gb:GafZipBundle):Void
-    {
+
+    private function onCompleteGafBundle(gb:GafZipBundle):Void {
         trace("gf.zip loading complete: " + request.url);
 
         var gf:GafFactory = new GafFactory();
@@ -141,17 +133,14 @@ class GafBundleLoader extends BaseLoader {
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
-        if (true || items_to_cache.indexOf(_origURl) >= 0)
-        {
-           // temp_cache[_origURl] = gf;
-           // temp_cache[_origURl] = _data;
+        if (true || items_to_cache.indexOf(_origURl) >= 0) {
+            // temp_cache[_origURl] = gf;
+            // temp_cache[_origURl] = _data;
         }
         super.complete_handler(null);
     }
 
-
-    private function get_swf() : Sprite {
+    private function get_swf():Sprite {
         return _swf;
     }
-
 }
