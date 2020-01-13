@@ -133,6 +133,7 @@ class GafBundleLoader extends BaseLoader {
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
+        gf.destroy();
         if (true || items_to_cache.indexOf(_origURl) >= 0) {
             // temp_cache[_origURl] = gf;
             // temp_cache[_origURl] = _data;
