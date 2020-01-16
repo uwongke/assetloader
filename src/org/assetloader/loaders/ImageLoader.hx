@@ -49,10 +49,8 @@ class ImageLoader extends DisplayObjectLoader {
      */
     override public function destroy():Void {
         super.destroy();
-        throw new Error(": ");
-        try {
+        if(_bitmapData != null)
             _bitmapData.dispose();
-        } catch (error:Error) {}
         _bitmap = null;
     }
 
