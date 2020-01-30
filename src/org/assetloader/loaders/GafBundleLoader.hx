@@ -27,22 +27,11 @@ class GafBundleLoader extends BaseLoader {
 
     private var _swf:Sprite;
 
-    ///////////////TODO: remove temporary caching. Global cache system must work///////////
-    private static var temp_cache:Map<String, GafFactory> = new Map<String, GafFactory>();
-    private static var items_to_cache:Array<String> = [
-        //        "game/assets/ui/toolTip/navigationArrow.swf",
-        //        "game/assets/ui/toolTip/exitPointer3D.swf",
-        //        "game/assets/entity/character/mouth/1.swf",
-        //        "game/assets/entity/character/mouth/ooh.swf",
-        //        "game/assets/ui/toolTip/clickPointer.swf"
-    ];
-
     //////////////////////////////////////////////////////////////////////
     private var _origURl:String = null;
 
     public function new(request:URLRequest, id:String = null) {
         _origURl = request.url;
-        // temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
         super(newReq, AssetType.SWF, id);
         setPreventCache(true);
@@ -59,21 +48,7 @@ class GafBundleLoader extends BaseLoader {
     }
 
     override private function invokeLoading():Void {
-        /////////////TODO: remove temporary caching. Global cache system must work
-        if (temp_cache.exists(_origURl)) {
-            trace("Get asset from cache, remove this logic later " + _origURl);
-            var spr = temp_cache[_origURl].getSprite("rootTimeline", false, 30, true);
-            if (spr.stage == null) {
-                _data = spr;
-            }
-
-            if (_data != null) {
-                super.complete_handler(null);
-            }
-            return;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        _loader.load(request);
+         _loader.load(request);
         // error_handler(null);
     }
 
@@ -133,10 +108,6 @@ class GafBundleLoader extends BaseLoader {
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
-        if (true || items_to_cache.indexOf(_origURl) >= 0) {
-            // temp_cache[_origURl] = gf;
-            // temp_cache[_origURl] = _data;
-        }
         super.complete_handler(null);
     }
 
