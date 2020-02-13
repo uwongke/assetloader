@@ -1,5 +1,6 @@
 package org.assetloader.loaders;
 
+import engine.ShellApi;
 import org.assetloader.signals.ErrorSignal;
 import openfl.display.Sprite;
 import openfl.events.ErrorEvent;
@@ -26,7 +27,7 @@ class GafBundleLoader extends BaseLoader {
     public var swf(get, never):Sprite;
 
     private var _swf:Sprite;
-
+    private var _shellApi:ShellApi;
     ///////////////TODO: remove temporary caching. Global cache system must work///////////
     private static var temp_cache:Map<String, GafFactory> = new Map<String, GafFactory>();
     private static var items_to_cache:Array<String> = [
@@ -40,8 +41,17 @@ class GafBundleLoader extends BaseLoader {
     //////////////////////////////////////////////////////////////////////
     private var _origURl:String = null;
 
-    public function new(request:URLRequest, id:String = null) {
+    public function new(request:URLRequest, id:String = null,shell:ShellApi=null) {
         _origURl = request.url;
+        _shellApi = shell;
+        if(shell != null) {
+        if(shell.useLargeAssets && request.url.indexOf("/character/") != -1 && request.url.indexOf("/headSkin/") == -1 && request.url.indexOf("/bodySkin/") == -1 && request.url.indexOf("/_poses/") == -1 && request.url.indexOf("mannequin") == -1 && request.url.indexOf("eyes") == -1)
+        {
+            request.url = request.url.substring(0, request.url.length-4) + "_gaflarge" + request.url.substring(request.url.length-4, request.url.length);
+            trace("REQUEST: " + request.url);
+
+        }
+     }
         // temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
         super(newReq, AssetType.SWF, id);
@@ -99,6 +109,7 @@ class GafBundleLoader extends BaseLoader {
             return;
         }
         var gb:GafZipBundle = new GafZipBundle();
+        //gb.shellApi = _shellApi;
         gb.name = _origURl;
         gb.init(bytes).onComplete(onCompleteGafBundle);
     }
@@ -133,6 +144,7 @@ class GafBundleLoader extends BaseLoader {
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
+        trace("BUNDLELOADER: data: " + _data);
         if (true || items_to_cache.indexOf(_origURl) >= 0) {
             // temp_cache[_origURl] = gf;
             // temp_cache[_origURl] = _data;
