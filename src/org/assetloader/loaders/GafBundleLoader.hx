@@ -69,21 +69,7 @@ class GafBundleLoader extends BaseLoader {
     }
 
     override private function invokeLoading():Void {
-        /////////////TODO: remove temporary caching. Global cache system must work
-        if (temp_cache.exists(_origURl)) {
-            trace("Get asset from cache, remove this logic later " + _origURl);
-            var spr = temp_cache[_origURl].getSprite("rootTimeline", false, 30, true);
-            if (spr.stage == null) {
-                _data = spr;
-            }
-
-            if (_data != null) {
-                super.complete_handler(null);
-            }
-            return;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        _loader.load(request);
+         _loader.load(request);
         // error_handler(null);
     }
 

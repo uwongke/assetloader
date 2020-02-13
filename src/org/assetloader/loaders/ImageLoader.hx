@@ -4,10 +4,15 @@ import openfl.errors.Error;
 import org.assetloader.base.AssetType;
 import org.assetloader.base.Param;
 import org.assetloader.signals.LoaderSignal;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.DisplayObject;
-import flash.net.URLRequest;
+import openfl.display.Bitmap;
+import openfl.display.BitmapData;
+import openfl.display.DisplayObject;
+import openfl.net.URLRequest;
+import openfl.events.ErrorEvent;
+import openfl.events.Event;
+import openfl.errors.Error;
+import openfl.display.Sprite;
+import openfl.geom.*;
 
 /**
  * @author Matan Uberstein
@@ -44,9 +49,8 @@ class ImageLoader extends DisplayObjectLoader {
      */
     override public function destroy():Void {
         super.destroy();
-        try {
+        if(_bitmapData != null)
             _bitmapData.dispose();
-        } catch (error:Error) {}
         _bitmap = null;
     }
 
@@ -57,15 +61,19 @@ class ImageLoader extends DisplayObjectLoader {
      */
     override private function testData(data:DisplayObject):String {
         var errMsg:String = "";
-        try {
-            var sourceBitmapData:BitmapData = cast((data), Bitmap).bitmapData;
-            var transparent:Bool = ((getParam(Param.TRANSPARENT) == null)) ? sourceBitmapData.transparent : getParam(Param.TRANSPARENT);
-            _bitmapData = new BitmapData(Std.int(_loader.contentLoaderInfo.width), Std.int(_loader.contentLoaderInfo.height), transparent,
-                getParam(Param.FILL_COLOR) != null ? getParam(Param.FILL_COLOR) : 0x000000);
-            _bitmapData.draw(sourceBitmapData, getParam(Param.MATRIX), getParam(Param.COLOR_TRANSFROM), getParam(Param.BLEND_MODE),
-                getParam(Param.CLIP_RECTANGLE), getParam(Param.SMOOTHING));
 
-            _data = _bitmap = new Bitmap(_bitmapData, getParam(Param.PIXEL_SNAPPING), getParam(Param.SMOOTHING));
+        try {
+            /*
+                var sourceBitmapData:BitmapData = cast((data), Bitmap).bitmapData;
+                var transparent:Bool = ((getParam(Param.TRANSPARENT) == null)) ? sourceBitmapData.transparent : getParam(Param.TRANSPARENT);
+                _bitmapData = new BitmapData(Std.int(_loader.contentLoaderInfo.width), Std.int(_loader.contentLoaderInfo.height), transparent,
+                    getParam(Param.FILL_COLOR));
+                _bitmapData.draw(sourceBitmapData, getParam(Param.MATRIX), getParam(Param.COLOR_TRANSFROM), getParam(Param.BLEND_MODE),
+                    getParam(Param.CLIP_RECTANGLE), getParam(Param.SMOOTHING));
+                _data = _bitmap = new Bitmap(_bitmapData, getParam(Param.PIXEL_SNAPPING), getParam(Param.SMOOTHING));
+             */
+
+            _data = _bitmap = cast(data, Bitmap);
         } catch (err:Error) {
             errMsg = err.message;
         }

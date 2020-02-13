@@ -16,7 +16,9 @@ class LoaderUtil {
         // Can't do a _loader.removeChild() because Loader throws an exception.
         if (null != _displayObject) {
             if (null != _loader) {
+                #if (openfl < "9.0.0")
                 _loader.__children.remove(_displayObject);
+                #end
                 _loader.__removedChildren.push(_displayObject);
             }
 
