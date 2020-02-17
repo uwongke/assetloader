@@ -55,7 +55,8 @@ class GafBundleLoader extends BaseLoader {
         // temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
         super(newReq, AssetType.SWF, id);
-        setPreventCache(true);
+        // RLH: disable cache busting
+        setPreventCache(false);
     }
 
     override private function initSignals():Void {
