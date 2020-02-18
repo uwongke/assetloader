@@ -45,7 +45,7 @@ class GafBundleLoader extends BaseLoader {
         _origURl = request.url;
         _shellApi = shell;
         if(shell != null) {
-            if(shell.useLargeAssets)
+            if(shell.useLargeAssets && request.url.indexOf("eyes") == -1)
             {
                 if(request.url.indexOf("/character/") != -1 || request.url.indexOf("/pet_babyquad/") != -1){
                     request.url = request.url.substring(0, request.url.length-4) + "_gaflarge" + request.url.substring(request.url.length-4, request.url.length);
