@@ -23,6 +23,7 @@ using org.assetloader.loaders.LoaderUtil;
 
 class GafBundleLoader extends BaseLoader {
     private var _loader:URLStream;
+	private var _largeAsset:Bool = false;
 
     public var swf(get, never):Sprite;
 
@@ -48,7 +49,8 @@ class GafBundleLoader extends BaseLoader {
             if(shell.useLargeAssets && request.url.indexOf("eyes") == -1)
             {
                 if(request.url.indexOf("/character/") != -1 || request.url.indexOf("/pet_babyquad/") != -1){
-                    request.url = request.url.substring(0, request.url.length-4) + "_gaflarge" + request.url.substring(request.url.length-4, request.url.length);
+                    request.url = request.url.substring(0, request.url.length - 4) + "_gaflarge" + request.url.substring(request.url.length - 4, request.url.length);
+					_largeAsset = true;
                     trace("REQUEST: " + request.url);
                 }
 
@@ -100,6 +102,7 @@ class GafBundleLoader extends BaseLoader {
         var gb:GafZipBundle = new GafZipBundle();
         //gb.shellApi = _shellApi;
         gb.name = _origURl;
+		if ( _largeAsset ) gb.name += "_large";
         gb.init(bytes).onComplete(onCompleteGafBundle);
     }
 
@@ -129,7 +132,7 @@ class GafBundleLoader extends BaseLoader {
         trace("gf.zip loading complete: " + request.url);
 
         var gf:GafFactory = new GafFactory();
-        gf.intiFromZipBundle(gb);
+        gf.intiFromZipBundle(gb, _largeAsset);
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
