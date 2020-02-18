@@ -45,12 +45,14 @@ class GafBundleLoader extends BaseLoader {
         _origURl = request.url;
         _shellApi = shell;
         if(shell != null) {
-        if(shell.useLargeAssets && request.url.indexOf("/character/") != -1 && request.url.indexOf("/headSkin/") == -1 && request.url.indexOf("/bodySkin/") == -1 && request.url.indexOf("/_poses/") == -1 && request.url.indexOf("mannequin") == -1 && request.url.indexOf("eyes") == -1)
-        {
-            request.url = request.url.substring(0, request.url.length-4) + "_gaflarge" + request.url.substring(request.url.length-4, request.url.length);
-            trace("REQUEST: " + request.url);
+            if(shell.useLargeAssets && request.url.indexOf("eyes") == -1)
+            {
+                if(request.url.indexOf("/character/") != -1 || request.url.indexOf("/pet_babyquad/") != -1){
+                    request.url = request.url.substring(0, request.url.length-4) + "_gaflarge" + request.url.substring(request.url.length-4, request.url.length);
+                    trace("REQUEST: " + request.url);
+                }
 
-        }
+            }
      }
         // temp_cache = new Map<String, Sprite>();
         var newReq = new URLRequest(StringTools.replace(request.url, '.swf', '.zip'));
