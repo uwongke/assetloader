@@ -2,6 +2,7 @@ package org.assetloader.base;
 
 /** LoaderFactory purely generates ILoader instances. */
 /** Hosted in this Library for now.  TODO@WOlfie -> Discuss with @Michael */
+import engine.ShellApi;
 import org.assetloader.loaders.GafBundleLoader;
 import org.assetloader.core.*;
 import org.assetloader.loaders.JSONLoader;
@@ -19,7 +20,7 @@ using Lambda;
 class LoaderFactory {
     /** Loader Property */
     private var _loader:AbstractLoader;
-
+    private var _shellApi:ShellApi;
     @:isvar public var loader(get, set):AbstractLoader;
 
     public function get_loader():AbstractLoader {
@@ -30,7 +31,7 @@ class LoaderFactory {
         return _loader = value;
     }
 
-    public function new() {}
+    public function new(shell:ShellApi=null) { _shellApi = shell;}
 
     /** Produces an ILoader instance according to parameters passed. */
     public function produce(id:String = null, type:String = "AUTO", request:URLRequest = null, params:Array<Dynamic> = null):ILoader {
@@ -138,7 +139,7 @@ class LoaderFactory {
                 _loader = new JSONLoader(request, id);
             case AssetType.SWF:
                 {
-                    _loader = new GafBundleLoader(request, id);
+                    _loader = new GafBundleLoader(request, id, _shellApi);
                     // _loader = new SWFBundleLoader(request, id);
                 }
             case AssetType.IMAGE:
