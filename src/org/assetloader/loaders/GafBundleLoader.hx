@@ -109,6 +109,8 @@ class GafBundleLoader extends BaseLoader {
     /**
      *  Error while loading .zip
     **/
+    // don't load bundle if zip not found
+    /*
     override function error_handler(event:ErrorEvent):Void {
         trace(" Error loading gaf .zip: " + event);
         var swfLoader:SWFBundleLoader = new SWFBundleLoader(new URLRequest(StringTools.replace(request.url, '.zip', '.bundle')), id);
@@ -116,6 +118,7 @@ class GafBundleLoader extends BaseLoader {
         swfLoader.onError.addOnce(swfErrorHandler);
         swfLoader.start();
     }
+    */
 
     function swfErrorHandler(signal:ErrorSignal):Void {
         trace("Error loading .swf: " + signal.loader.request.url);
