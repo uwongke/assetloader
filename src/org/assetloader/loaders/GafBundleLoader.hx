@@ -51,7 +51,7 @@ class GafBundleLoader extends BaseLoader {
                 if(request.url.indexOf("/character/") != -1 || request.url.indexOf("/pet_babyquad/") != -1){
                     request.url = request.url.substring(0, request.url.length - 4) + "_gaflarge" + request.url.substring(request.url.length - 4, request.url.length);
 					_largeAsset = true;
-                    trace("REQUEST: " + request.url);
+                    //trace("REQUEST: " + request.url);
                 }
 
             }
@@ -100,7 +100,6 @@ class GafBundleLoader extends BaseLoader {
             return;
         }
         var gb:GafZipBundle = new GafZipBundle();
-        //gb.shellApi = _shellApi;
         gb.name = _origURl;
 		if ( _largeAsset ) gb.name += "_large";
         gb.init(bytes).onComplete(onCompleteGafBundle);
@@ -132,15 +131,14 @@ class GafBundleLoader extends BaseLoader {
     }
 
     private function onCompleteGafBundle(gb:GafZipBundle):Void {
-        trace("gf.zip loading complete: " + request.url);
-
+        //trace("gf.zip loading complete: " + request.url);
         var gf:GafFactory = new GafFactory();
         gf.intiFromZipBundle(gb, _largeAsset);
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
         gf.destroy();
-        trace("BUNDLELOADER: data: " + _data);
+        //trace("BUNDLELOADER: data: " + _data);
         if (true || items_to_cache.indexOf(_origURl) >= 0) {
             // temp_cache[_origURl] = gf;
             // temp_cache[_origURl] = _data;
