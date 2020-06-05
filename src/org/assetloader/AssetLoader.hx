@@ -179,26 +179,3 @@ class AssetLoader extends AssetLoaderBase implements IAssetLoader {
         }
     }
 }
-
-//    private function sortIdsByPriority():Void {
-//        var priorities : Array<Dynamic> = [];
-//
-//        for (i in 0..._numLoaders){
-//            var loader : ILoader = getLoader(_ids[i]);
-//            priorities.push(loader.getParam(Param.PRIORITY));
-//        }
-//
-//        //var sortedIndexs = priorities.sort((c)->{
-//        //    c == Float;
-//        //    return 0;
-//        //});
-//
-//        //TODO@Wolfie -> overkill for unit testing..
-//        var sortedIndexs = priorities;
-//
-//        var idsCopy: Array<Dynamic> = _ids.concat();
-//
-//        for (j in 0..._numLoaders){
-//            _ids[j] = idsCopy[sortedIndexs[j]];
-//        }
-//    }
