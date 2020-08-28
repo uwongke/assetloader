@@ -119,6 +119,11 @@ class GafBundleLoader extends BaseLoader {
     }
     */
 
+    override function error_handler(event:ErrorEvent):Void {
+        trace(" Error loading gaf .zip: " + event);
+        super.complete_handler(null);
+    }
+
     function swfErrorHandler(signal:ErrorSignal):Void {
         trace("Error loading .swf: " + signal.loader.request.url);
         super.error_handler(new ErrorEvent(signal.type, false, false, signal.message));
