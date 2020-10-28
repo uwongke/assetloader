@@ -139,8 +139,8 @@ class GafBundleLoader extends BaseLoader {
         //trace("gf.zip loading complete: " + request.url);
         var gf:GafFactory = new GafFactory();
         gf.intiFromZipBundle(gb, _largeAsset);
-        _data = gf;
-        /*
+        //_data = gf;
+        ///*
         var spr = gf.getSprite("rootTimeline", false, 30, true);
         spr.gotoAndStop(1);
         _data = spr;
@@ -150,7 +150,7 @@ class GafBundleLoader extends BaseLoader {
             // temp_cache[_origURl] = gf;
             // temp_cache[_origURl] = _data;
         }
-        */
+        //*/
         super.complete_handler(null);
     }
 
