@@ -238,7 +238,7 @@ class XmlConfigParser implements IConfigParser {
             return 0;
         }
 
-        var test = new as3hx.Compat.Regex(" ", "g");
+        //var test = new as3hx.Compat.Regex(" ", "g");
         //str = StringTools.replace(new as3hx.Compat.Regex(" ", "g"), "");
 
         //var mbExp : as3hx.Compat.Regex = new as3hx.Compat.Regex("mb", "gi");
