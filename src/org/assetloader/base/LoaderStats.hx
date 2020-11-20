@@ -57,13 +57,13 @@ class LoaderStats implements ILoadStats {
         _bytesTotal = bytesTotal;
 
         if (bytesLoaded > 0) {
-            var bytesDif : Int = as3hx.Compat.parseInt(bytesLoaded - _bytesLoaded);
+            var bytesDif : Int = bytesLoaded - _bytesLoaded;
             _bytesLoaded = bytesLoaded;
 
             _progress = (_bytesLoaded / _bytesTotal) * 100;
 
             var currentTime : Int = Math.round(haxe.Timer.stamp() * 1000);
-            var updateTimeDif : Int = as3hx.Compat.parseInt(currentTime - _updateTime);
+            var updateTimeDif : Int = (currentTime - _updateTime);
 
             if (updateTimeDif > 0) {
                 _updateTime = currentTime;
