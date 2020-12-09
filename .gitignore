@@ -2,3 +2,4 @@
 assetloader.iml
 webRoot/html5/haxe
 webRoot/html5/obj
+**.DS_Store
