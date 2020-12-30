@@ -114,7 +114,7 @@ class GafBundleLoader extends BaseLoader {
     private function onCompleteGafBundle(gb:GafZipBundle):Void {
         //trace("gf.zip loading complete: " + request.url);
         var gf:GafFactory = new GafFactory();
-        gf.intiFromZipBundle(gb, _largeAsset);
+        gf.initFromZipBundle(gb, _largeAsset);
         _data = gf;
         /*
         var spr = gf.getSprite("rootTimeline", false, 30, true);
