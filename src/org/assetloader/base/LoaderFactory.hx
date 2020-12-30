@@ -7,8 +7,6 @@ import org.assetloader.loaders.GafBundleLoader;
 import org.assetloader.core.*;
 import org.assetloader.loaders.JSONLoader;
 import org.assetloader.loaders.SoundLoader;
-import org.assetloader.loaders.SWFBundleLoader;
-import org.assetloader.loaders.SWFLoader;
 import org.assetloader.loaders.TextLoader;
 import org.assetloader.loaders.XMLLoader;
 import org.assetloader.parsers.URLParser;
@@ -138,26 +136,11 @@ class LoaderFactory {
             case AssetType.JSON:
                 _loader = new JSONLoader(request, id);
             case AssetType.SWF:
-                {
-                    _loader = new GafBundleLoader(request, id, _shellApi);
-                    // _loader = new SWFBundleLoader(request, id);
-                }
+                _loader = new GafBundleLoader(request, id, _shellApi);
             case AssetType.IMAGE:
                 _loader = new ImageLoader(request, id);
-
             default:
                 _loader = new XMLLoader(request, id);
-
-                // TODO @ Wolfie -> Fixup remaining loaders.....
-                // case AssetType.SWF:
-
-                /** rlh temp for Haxe */
-                //    _loader = new SWFLoader(request, id);
-
-                // case AssetType.SOUND:
-                //    _loader = new SoundLoader(request, id);
-                // default:
-                //    throw new AssetLoaderError(AssetLoaderError.ASSET_TYPE_NOT_RECOGNIZED);
         }
     }
 }
